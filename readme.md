@@ -1,5 +1,5 @@
 ## Installation
-`composer install kenokokoro/laravel-base`
+`composer install kenokokoro/laravel-basetree`
 
 After the package is pulled in, register the Service Provider in your `AppServiceProvider`:
 ```php
