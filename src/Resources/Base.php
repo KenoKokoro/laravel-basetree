@@ -123,7 +123,7 @@ class Base implements ResourceScreen
         $this->relations = array_unique(array_merge($request->get('fields', []), $this->repository->relations()));
         $this->shouldPaginate = $request->has('paginate');
         $this->datatableResponse = $request->has('datatable');
-        $this->repository->setRequestRequirements($request->get('perPage') ?? 2,
+        $this->repository->setRequestRequirements($request->get('perPage') ?? 15,
             $this->relations, $request->get('constraints') ?? []);
     }
 

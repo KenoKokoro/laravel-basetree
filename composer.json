@@ -11,13 +11,10 @@
   ],
   "autoload": {
     "psr-4": {
-      "BaseTree\\": "src/"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
+      "BaseTree\\": "src/",
       "BaseTree\\Tests\\": "tests/"
     },
+
     "files": [
       "tests/utilities/helpers.php"
     ]

@@ -39,7 +39,9 @@ class RestfulJsonController extends BaseController
 
     public function store(Request $request)
     {
-        $this->validate($request, $this->resource->storeRules($request));
+        if ($this->resource instanceof ResourceValidation) {
+            $this->validate($request, $this->resource->storeRules($request));
+        }
 
         DB::beginTransaction();
         $entity = $this->resource->store($request->all());
@@ -51,7 +53,10 @@ class RestfulJsonController extends BaseController
     public function update(Request $request, $id)
     {
         $entity = $this->resource->findWithoutRelations($id);
-        $this->validate($request, $this->resource->updateRules($id, $request));
+
+        if ($this->resource instanceof ResourceValidation) {
+            $this->validate($request, $this->resource->updateRules($id, $request));
+        }
 
         DB::beginTransaction();
         $updated = $this->resource->updateEntity($entity, $request->all());
@@ -63,7 +68,10 @@ class RestfulJsonController extends BaseController
     public function destroy(Request $request, $id)
     {
         $entity = $this->resource->findWithoutRelations($id);
-        $this->validate($request, $this->resource->destroyRules($id, $request));
+
+        if ($this->resource instanceof ResourceValidation) {
+            $this->validate($request, $this->resource->destroyRules($id, $request));
+        }
 
         DB::beginTransaction();
         $this->resource->destroy($entity);
