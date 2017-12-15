@@ -1,5 +1,5 @@
 ## Installation
-`composer install kenokokoro/laravel-basetree`
+`composer require kenokokoro/laravel-basetree`
 
 After the package is pulled in, register the Service Provider in your `AppServiceProvider`:
 ```php
@@ -40,8 +40,8 @@ So in your `app\Models` directory create `Foo.php`
     
     use BaseTree\Models\Model;
     
-    class Foo extends Model {
-    
+    class Foo extends Model 
+    {
         protected $fillable = ['name', 'description'];
     }
 ```
@@ -55,7 +55,8 @@ So in `app/DAL/Foo` create `FooRepository.php`:
 
     use BaseTree\Eloquent\RepositoryInterface;
 
-    interface FooRepository extends RepositoryInterface {
+    interface FooRepository extends RepositoryInterface 
+    {
     }
 ```
 
@@ -65,8 +66,14 @@ In `app/DAL/Foo` create `EloquentFoo.php`
     namespace App\DAL\Foo;
 
     use BaseTree\Eloquent\BaseEloquent;
+    use App\Models\Foo;
 
-    class EloquentFoo extends BaseEloquent implements FooRepository {
+    class EloquentFoo extends BaseEloquent implements FooRepository 
+    {
+        public function __construct(Foo $model)
+        {
+            parent::__construct($model);
+        }
     }
 ```
 Now bind everything in your custom created service provider. I would do:
@@ -78,7 +85,8 @@ In `app/DAL` create `DalServiceProvider.php`
     use App\DAL\Foo\FooRepository;
     use App\DAL\Foo\EloquentFoo;
     
-    class DalServiceProvider extends ServiceProvider {
+    class DalServiceProvider extends ServiceProvider 
+    {
         public function register() {
             $bindings = [
                 FooRepository::class => EloquentFoo::class,
@@ -114,9 +122,10 @@ In `app/Resources` create the file `FooResource.php`:
     use BaseTree\Resources\Base;
     use App\DAL\FooRepository;
     
-    class FooResource extends Base {
-    
-        public function __construct(FooRepository $repository) {
+    class FooResource extends Base 
+    {
+        public function __construct(FooRepository $repository) 
+        {
             parent::__construct($repository);
         }
     }
@@ -144,9 +153,10 @@ In `app/Http/Controllers` (or inside somewhere else) create your `FoosController
     use BaseTree\Controller\RestfulJsonController;
     use App\Resources\FooResource;
     
-    class FoosController extends RestfulJsonController {
-        
-        public function __construct(FooResource $resource) {
+    class FoosController extends RestfulJsonController 
+    {
+        public function __construct(FooResource $resource) 
+        {
             parent::__construct($resource);
         }
     }
@@ -278,7 +288,6 @@ to generate slug for you resource which only has name as value, in your `app\Res
     
     class FooResource extends Base 
     {
-    
         public function __construct(FooRepository $repository) 
         {
             parent::__construct($repository);
@@ -300,6 +309,7 @@ Same thing works for controllers and DAL. Whatever you need to be customized can
 ## TODO:
 1. Tests for everything
 2. Artisan generator
+3. Wiki examples
 
 ## License
 The BaseTree package is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT)
