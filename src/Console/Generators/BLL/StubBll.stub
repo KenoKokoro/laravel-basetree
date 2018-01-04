@@ -1,0 +1,32 @@
+<?php
+
+
+namespace [bll-namespace];
+
+
+use [dal-interface-namespace]\[dal-interface-name];
+use BaseTree\Resources\Contracts\ResourceValidation;
+use BaseTree\Resources\BaseResource;
+
+class [bll-name] extends BaseResource implements ResourceValidation
+{
+    public function __construct([dal-interface-name] $repository)
+    {
+        parent::__construct($repository);
+    }
+
+    public function storeRules($request = null): array
+    {
+        return [];
+    }
+
+    public function updateRules($id, $request = null): array
+    {
+        return [];
+    }
+
+    public function destroyRules($id, $request = null): array
+    {
+        return [];
+    }
+}

@@ -31,7 +31,7 @@ class BaseEloquent implements RepositoryInterface
 
     public function find($id)
     {
-        return $this->query->find($id);
+        return $this->model->find($id);
     }
 
     public function findByConstraints(array $constraints)
@@ -75,12 +75,12 @@ class BaseEloquent implements RepositoryInterface
 
     public function create(array $attributes)
     {
-        return $this->query->create($attributes);
+        return $this->model->create($attributes);
     }
 
     public function findOrFail($id)
     {
-        return $this->query->findOrFail($id);
+        return $this->model->findOrFail($id);
     }
 
     public function getByIds(array $ids, $column = 'id')

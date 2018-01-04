@@ -13,7 +13,7 @@ class JsonResponse extends LaravelJsonResponse
 
     private $status = self::STATUS_TRUE;
 
-    public function success($message = '', $append = [])
+    public function success(string $message = '', array $append = []): parent
     {
         $this->status = self::STATUS_TRUE;
 
@@ -29,59 +29,59 @@ class JsonResponse extends LaravelJsonResponse
         return $this->parentInstance($response, parent::HTTP_OK);
     }
 
-    public function created($message = '', $append = [])
+    public function created(string $message = '', array $append = []): parent
     {
         $this->status = self::STATUS_TRUE;
         if (empty($message)) {
             $message = 'Successfully created.';
         }
-        $data = $this->getResponse($message);
+        $response = $this->getResponse($message);
 
         if ( ! empty($append)) {
-            $data = array_merge($data, $append);
+            $response = array_merge($response, $append);
         }
 
-        return $this->parentInstance($data, parent::HTTP_CREATED);
+        return $this->parentInstance($response, parent::HTTP_CREATED);
     }
 
-    public function forbidden($message = '')
+    public function forbidden(string $message = ''): parent
     {
         $this->status = self::STATUS_FALSE;
         if (empty($message)) {
             $message = 'Forbidden.';
         }
-        $data = $this->getResponse($message);
+        $response = $this->getResponse($message);
 
-        return $this->parentInstance($data, parent::HTTP_FORBIDDEN);
+        return $this->parentInstance($response, parent::HTTP_FORBIDDEN);
     }
 
-    public function unauthorized($message = '')
+    public function unauthorized(string $message = ''): parent
     {
         $this->status = self::STATUS_FALSE;
         if (empty($message)) {
             $message = 'Unauthorized.';
         }
-        $data = $this->getResponse($message);
+        $response = $this->getResponse($message);
 
-        return $this->parentInstance($data, parent::HTTP_UNAUTHORIZED);
+        return $this->parentInstance($response, parent::HTTP_UNAUTHORIZED);
     }
 
-    public function unprocessableEntity($message, $append = [])
+    public function unprocessableEntity(string $message = '', array $append = []): parent
     {
         $this->status = self::STATUS_FALSE;
         if (empty($message)) {
             $message = 'Unprocessable entity.';
         }
-        $data = $this->getResponse($message);
+        $response = $this->getResponse($message);
 
         if ( ! empty($append)) {
-            $data = array_merge($data, $append);
+            $response = array_merge($response, $append);
         }
 
-        return $this->parentInstance($data, parent::HTTP_UNPROCESSABLE_ENTITY);
+        return $this->parentInstance($response, parent::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public function notFound($message)
+    public function notFound(string $message = ''): parent
     {
         $this->status = self::STATUS_FALSE;
         if (empty($message)) {
@@ -91,7 +91,7 @@ class JsonResponse extends LaravelJsonResponse
         return $this->parentInstance($this->getResponse($message), parent::HTTP_NOT_FOUND);
     }
 
-    public function internalError($message)
+    public function internalError(string $message = ''): parent
     {
         $this->status = self::STATUS_FALSE;
         if (empty($message)) {
@@ -101,7 +101,7 @@ class JsonResponse extends LaravelJsonResponse
         return $this->parentInstance($this->getResponse($message), parent::HTTP_INTERNAL_SERVER_ERROR);
     }
 
-    private function getResponse($message)
+    private function getResponse(string $message): array
     {
         return [
             'status' => $this->status,
@@ -109,7 +109,7 @@ class JsonResponse extends LaravelJsonResponse
         ];
     }
 
-    private function parentInstance($data, $code)
+    private function parentInstance(array $data, int $code): parent
     {
         return new parent($data, $code);
     }

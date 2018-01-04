@@ -25,10 +25,10 @@ interface ResourceScreen
 
     /**
      * @param integer $id
-     * @param mixed $relations
+     * @param array $relations
      * @return Model
      */
-    public function findWithRelations($id, $relations = []);
+    public function findWithRelations($id, array $relations = []);
 
     /**
      * @param Model $model

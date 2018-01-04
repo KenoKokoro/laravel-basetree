@@ -1,0 +1,17 @@
+<?php
+
+
+namespace [dal-namespace];
+
+
+use [model-namespace]\[model-name];
+use BaseTree\Eloquent\BaseEloquent;
+use [dal-interface-namespace]\[dal-interface-name];
+
+class [dal-name] extends BaseEloquent implements [dal-interface-name]
+{
+    public function __construct([model-name] $model)
+    {
+        parent::__construct($model);
+    }
+}

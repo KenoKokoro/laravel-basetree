@@ -1,0 +1,10 @@
+<?php
+
+
+namespace [dal-interface-namespace];
+use BaseTree\Eloquent\RepositoryInterface;
+
+
+interface [dal-interface-name] extends RepositoryInterface
+{
+}

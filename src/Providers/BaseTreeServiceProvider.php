@@ -5,6 +5,7 @@ namespace BaseTree\Providers;
 
 
 use Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider;
+use BaseTree\Console\Generators\ServiceProvider as ConsoleServiceProvider;
 use BaseTree\Responses\ServiceProvider as ResponseServiceProvider;
 use Illuminate\Support\ServiceProvider;
 use Yajra\DataTables\DataTablesServiceProvider;
@@ -16,6 +17,7 @@ class BaseTreeServiceProvider extends ServiceProvider
     {
         $this->app->register(ResponseServiceProvider::class);
         $this->app->register(DataTablesServiceProvider::class);
+        $this->app->register(ConsoleServiceProvider::class);
 
         if ($this->app->environment() == 'local') {
             $this->app->register(IdeHelperServiceProvider::class);

@@ -80,9 +80,10 @@ class Handler extends LaravelHandler
         } elseif ($exception instanceof ModelNotFoundException) {
             return \Json::notFound($exception->getMessage());
         } elseif ($exception instanceof AuthorizationException
-                  or $exception instanceof UnauthorizedHttpException
-                  or $exception instanceof AuthenticationException) {
+                  or $exception instanceof UnauthorizedHttpException) {
             return \Json::unauthorized($exception->getMessage());
+        } elseif ($exception instanceof AuthenticationException) {
+            return \Json::forbidden($exception->getMessage());
         } elseif ($exception instanceof NotFoundHttpException) {
             return \Json::internalError('Route does not exist');
         } elseif ($exception instanceof MethodNotAllowedHttpException) {

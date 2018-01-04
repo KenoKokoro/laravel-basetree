@@ -1,0 +1,16 @@
+<?php
+
+
+namespace [controller-namespace];
+
+
+use BaseTree\Controller\RestfulJsonController;
+use [bll-namespace]\[bll-name];
+
+class [controller-name] extends RestfulJsonController
+{
+    public function __construct([bll-name] $resource)
+    {
+        parent::__construct($resource);
+    }
+}

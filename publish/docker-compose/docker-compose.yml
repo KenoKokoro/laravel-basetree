@@ -1,0 +1,39 @@
+version: "3"
+services:
+  app:
+    working_dir: /app
+    build:
+      context: ./docker
+    links:
+      - mariadb
+    volumes:
+      - .:/app
+    ports:
+      - 80:80
+    environment:
+      - "WEBROOT=/app/public"
+      - "ROOT=/app"
+      - "REAL_IP_HEADER=1"
+      - "NGINX_SERVER_NAME=localhost"
+      - "PUID=${DOCKER_HOST_UID}"
+      - "PGID=${DOCKER_HOST_GID}"
+
+  # Services
+  mariadb:
+    image: mariadb:10.3
+    volumes:
+      - "/opt/mariadb:/var/lib/mariadb:rw"
+    environment:
+      - "MYSQL_DATABASE=${DB_DATABASE}"
+      - "MYSQL_USER=${DB_USERNAME}"
+      - "MYSQL_PASSWORD=${DB_PASSWORD}"
+      - "MYSQL_ROOT_PASSWORD=rootsecret123#"
+    ports:
+      - 3307:3306
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:4.7
+    links:
+      - mariadb:db
+    ports:
+      - 81:80

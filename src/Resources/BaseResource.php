@@ -11,7 +11,7 @@ use BaseTree\Resources\Contracts\ResourceCallbacks;
 use BaseTree\Resources\Contracts\ResourceScreen;
 use Illuminate\Http\Request;
 
-class Base implements ResourceScreen
+class BaseResource implements ResourceScreen
 {
     /**
      * @var RepositoryInterface
@@ -72,7 +72,7 @@ class Base implements ResourceScreen
         return $this->repository->findOrFail($id);
     }
 
-    public function findWithRelations($id, $relations = [])
+    public function findWithRelations($id, array $relations = [])
     {
         return $this->repository->findWithRelations($id, $relations);
     }
