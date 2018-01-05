@@ -74,13 +74,6 @@ interface RepositoryInterface
 
     /**
      * @param Model $model
-     * @param array $attributes
-     * @return Model
-     */
-    public function updateInMemory(Model $model, array $attributes);
-
-    /**
-     * @param Model $model
      * @return boolean
      */
     public function delete(Model $model);
@@ -96,7 +89,7 @@ interface RepositoryInterface
      * @param array $constraints
      * @return Builder
      */
-    public function setConstraints(array $constraints);
+    public function setRequestConstraints(array $constraints);
 
     /**
      * @param int $perPage

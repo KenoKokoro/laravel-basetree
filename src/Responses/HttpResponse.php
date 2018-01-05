@@ -4,6 +4,7 @@
 namespace BaseTree\Responses;
 
 
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\URL;
 
 class HttpResponse
@@ -15,27 +16,27 @@ class HttpResponse
 
     private $to = null;
 
-    public function success($to = null, $message = null, $append = [], $input = [], $errors = [])
+    public function success($to = null, $message = null, $append = []): RedirectResponse
     {
         $this->status = self::SUCCESS;
         $this->to = $to;
 
         if (empty($message)) {
-            $message = 'Successfully executed';
+            $message = 'Successfully executed.';
         }
 
         $with = $this->generateFlashMessage($message, $append);
 
-        return $this->redirect()->with($with)->withInput($input)->withErrors($errors);
+        return $this->redirect()->with($with);
     }
 
-    public function danger($to = null, $message = null, $append = [], $input = [], $errors = [])
+    public function danger($to = null, $message = null, $append = [], $input = [], $errors = []): RedirectResponse
     {
         $this->status = self::DANGER;
         $this->to = $to;
 
         if (empty($message)) {
-            $message = 'Successfully executed';
+            $message = 'Danger.';
         }
 
         $with = $this->generateFlashMessage($message, $append);

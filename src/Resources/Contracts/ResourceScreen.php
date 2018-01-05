@@ -82,5 +82,5 @@ interface ResourceScreen
     /**
      * @return string
      */
-    public function authorizationKey();
+    public function authorizationKey(): string;
 }

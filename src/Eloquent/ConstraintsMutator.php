@@ -4,6 +4,7 @@
 namespace BaseTree\Eloquent;
 
 
+use Illuminate\Database\Query\Expression;
 use Illuminate\Support\Facades\DB;
 
 class ConstraintsMutator
@@ -11,7 +12,7 @@ class ConstraintsMutator
     /**
      * @var array
      */
-    private $constraints;
+    protected $constraints;
 
     protected $empty = true;
 
@@ -24,40 +25,38 @@ class ConstraintsMutator
         $this->execute();
     }
 
-    public function execute()
+    public function execute(): void
     {
         foreach ($this->constraints as $constraint) {
-            [$column, $operator, $value] = explode('|', $constraint);
-            $this->queries[] = $this->appendQuery($column, $operator, $value);
+            [$column, $operator, $value] = $this->explode($constraint);
+            $this->queries[] = $this->raw($column, $operator, $value);
         }
     }
 
-    public function isEmpty()
+    public function isEmpty(): bool
     {
         return $this->empty;
     }
 
-    public function queries()
+    public function queries(): array
     {
         return $this->queries;
     }
 
-    private function appendQuery($column, $operator, $value)
+    protected function raw($column, $operator, $value): Expression
     {
-        if ($this->isColumn($value)) {
-            return $this->raw($column, $operator, $value);
+        # TODO: Inspect raw for security
+        return DB::raw("{$column} {$operator} {$value}");
+    }
+
+    protected function explode(string $constraint): array
+    {
+        $arguments = explode('|', $constraint);
+
+        if (count($arguments) === 2) {
+            return [$column = $arguments[0], '=', $value = $arguments[1]];
         }
 
-        return [$column, $operator, $value];
-    }
-
-    private function isColumn($value)
-    {
-        return preg_match("/^\`\w+\`$/", $value);
-    }
-
-    private function raw($column, $operator, $value)
-    {
-        return DB::raw("{$column} {$operator} {$value}");
+        return [$column = $arguments[0], $operation = $arguments[1], $value = $arguments[2]];
     }
 }

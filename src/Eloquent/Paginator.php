@@ -78,7 +78,7 @@ class Paginator implements Arrayable, JsonSerializable, Jsonable
         return null;
     }
 
-    protected function url($page)
+    protected function url(int $page)
     {
         if ($page <= 0) {
             $page = 1;

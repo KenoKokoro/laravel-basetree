@@ -139,13 +139,8 @@ class BaseResource implements ResourceScreen
         return $this->repository->model();
     }
 
-    public function authorizationKey()
+    public function authorizationKey(): string
     {
-        $model = $this->model();
-        if (is_string($model)) {
-            return $model;
-        }
-
-        return get_class($model);
+        return get_class($this->model());
     }
 }

@@ -46,29 +46,29 @@ class Creator implements Arrayable, JsonSerializable, Jsonable
         return DataTables::of($query);
     }
 
-    public function make($mDataSupport = true)
+    public function make($mDataSupport = true): self
     {
         $this->response = $this->datatable->make($mDataSupport);
 
         return $this;
     }
 
-    protected function callback()
+    protected function callback(): self
     {
         return $this;
     }
 
-    public function toArray()
+    public function toArray(): array
     {
         return json_decode($this->toJson(), true);
     }
 
-    public function toJson($options = 0)
+    public function toJson($options = 0): string
     {
         return $this->response->content();
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return $this->toArray();
     }

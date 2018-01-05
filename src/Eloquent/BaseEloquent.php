@@ -38,7 +38,7 @@ class BaseEloquent implements RepositoryInterface
     public function findByConstraints(array $constraints)
     {
         if (empty($constraints)) {
-            throw new Exception("Constraint array shouldn't be empty.");
+            throw new InvalidArgumentException('Constraint array shouldn`t be empty.');
         }
 
         $builder = $this->query->newQuery();
@@ -96,16 +96,6 @@ class BaseEloquent implements RepositoryInterface
         return $model->fresh();
     }
 
-    public function updateInMemory(Model $model, array $attributes)
-    {
-        foreach ($attributes as $attribute => $value) {
-            $model->{$attribute} = $value;
-        }
-        $model->save();
-
-        return $model;
-    }
-
     public function delete(Model $model)
     {
         return $model->delete();
@@ -120,13 +110,13 @@ class BaseEloquent implements RepositoryInterface
         return $model;
     }
 
-    public function setConstraints(array $constraints)
+    public function setRequestConstraints(array $constraints)
     {
         $mutated = new ConstraintsMutator($constraints);
 
         foreach (array_merge($mutated->queries(), $this->defaultConstraints) as $query) {
             if ($query instanceof Expression) {
-                $this->query->whereRaw($query);
+                $this->query->whereRaw($query->getValue());
                 continue;
             }
 
@@ -138,7 +128,7 @@ class BaseEloquent implements RepositoryInterface
     {
         $this->perPage = $perPage;
         $this->relations = $relations;
-        $this->setConstraints($constraints);
+        $this->setRequestConstraints($constraints);
     }
 
     public function count()
