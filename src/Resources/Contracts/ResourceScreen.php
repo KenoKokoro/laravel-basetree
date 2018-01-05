@@ -35,7 +35,7 @@ interface ResourceScreen
      * @return Model
      * @throws ModelNotFoundException
      */
-    public function returnOrFail(Model $model);
+    public function returnOrFail(Model $model = null);
 
     /**
      * @param array $attributes
@@ -67,7 +67,7 @@ interface ResourceScreen
      * @param Request $request
      * @return void
      */
-    public function setRequestOperations(Request $request);
+    public function setRequestOperations(Request $request): void;
 
     /**
      * @return RepositoryInterface

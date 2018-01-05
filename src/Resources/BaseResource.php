@@ -69,7 +69,9 @@ class BaseResource implements ResourceScreen
 
     public function findWithoutRelations($id)
     {
-        return $this->repository->findOrFail($id);
+        $result = $this->repository->find($id);
+
+        return $this->returnOrFail($result);
     }
 
     public function findWithRelations($id, array $relations = [])
@@ -77,7 +79,7 @@ class BaseResource implements ResourceScreen
         return $this->repository->findWithRelations($id, $relations);
     }
 
-    public function returnOrFail(Model $model)
+    public function returnOrFail(Model $model = null)
     {
         return $this->repository->returnOrFail($model);
     }
@@ -118,7 +120,7 @@ class BaseResource implements ResourceScreen
         return $this->findWithRelations($id, $relations);
     }
 
-    public function setRequestOperations(Request $request)
+    public function setRequestOperations(Request $request): void
     {
         $this->relations = array_unique(array_merge($request->get('fields', []), $this->repository->relations()));
         $this->shouldPaginate = $request->has('paginate');

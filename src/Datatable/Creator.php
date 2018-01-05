@@ -3,11 +3,20 @@
 
 namespace BaseTree\Datatable;
 
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Contracts\Support\Jsonable;
+use Illuminate\Http\JsonResponse;
+use JsonSerializable;
 use Yajra\DataTables\DataTableAbstract;
 use Yajra\DataTables\Facades\DataTables;
 
-class Creator
+class Creator implements Arrayable, JsonSerializable, Jsonable
 {
+    /**
+     * @var JsonResponse
+     */
+    protected $response;
+
     protected $query;
 
     /**
@@ -39,11 +48,28 @@ class Creator
 
     public function make($mDataSupport = true)
     {
-        return $this->datatable->make($mDataSupport);
+        $this->response = $this->datatable->make($mDataSupport);
+
+        return $this;
     }
 
     protected function callback()
     {
         return $this;
+    }
+
+    public function toArray()
+    {
+        return json_decode($this->toJson(), true);
+    }
+
+    public function toJson($options = 0)
+    {
+        return $this->response->content();
+    }
+
+    public function jsonSerialize()
+    {
+        return $this->toArray();
     }
 }

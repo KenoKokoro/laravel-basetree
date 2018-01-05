@@ -15,6 +15,7 @@ class BaseEloquent implements RepositoryInterface
     /** @var Model|Builder */
     protected $query;
 
+    /** @var Model|Builder */
     protected $model;
 
     protected $perPage = self::PER_PAGE;
@@ -55,7 +56,7 @@ class BaseEloquent implements RepositoryInterface
             $relations = $this->relations;
         }
 
-        return $this->findOrFail($id)->load($relations);
+        return $this->returnOrFail($this->find($id))->load($relations);
     }
 
     public function all(array $columns = ['*'], array $relations = [])
@@ -80,7 +81,7 @@ class BaseEloquent implements RepositoryInterface
 
     public function findOrFail($id)
     {
-        return $this->model->findOrFail($id);
+        return $this->returnOrFail($this->find($id));
     }
 
     public function getByIds(array $ids, $column = 'id')
@@ -110,7 +111,7 @@ class BaseEloquent implements RepositoryInterface
         return $model->delete();
     }
 
-    public function returnOrFail($model)
+    public function returnOrFail(Model $model = null)
     {
         if ( ! $model) {
             throw (new ModelNotFoundException())->setModel(get_class($this->query));

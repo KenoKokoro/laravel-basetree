@@ -90,7 +90,7 @@ interface RepositoryInterface
      * @throws ModelNotFoundException
      * @return Model
      */
-    public function returnOrFail($model);
+    public function returnOrFail(Model $model = null);
 
     /**
      * @param array $constraints
