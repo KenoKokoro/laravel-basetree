@@ -14,7 +14,7 @@
             "BaseTree\\": "src/"
         },
         "files": [
-            "tests/utilities/helpers.php"
+            "src/Testing/utilities/helpers.php"
         ]
     },
     "require": {
