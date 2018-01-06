@@ -1,7 +1,7 @@
 <?php
 
 
-namespace BaseTree\Tests\Traits;
+namespace BaseTree\Testing\Traits;
 
 
 trait HelperMethods

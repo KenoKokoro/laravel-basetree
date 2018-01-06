@@ -1,14 +1,14 @@
 <?php
 
 
-namespace BaseTree\Tests;
+namespace BaseTree\Testing;
 
 
 use BaseTree\Models\Model;
-use BaseTree\Tests\Traits\Assertions\FieldValidationMessages;
-use BaseTree\Tests\Traits\CreatesApplication;
-use BaseTree\Tests\Traits\DatabaseMigrations;
-use BaseTree\Tests\Traits\HelperMethods;
+use BaseTree\Testing\Traits\Assertions\FieldValidationMessages;
+use BaseTree\Testing\Traits\CreatesApplication;
+use BaseTree\Testing\Traits\DatabaseMigrations;
+use BaseTree\Testing\Traits\HelperMethods;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace BaseTree\Tests\Traits\Assertions;
+namespace BaseTree\Testing\Traits\Assertions;
 
 
 trait FieldValidationMessages

@@ -11,8 +11,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "BaseTree\\": "src/",
-            "BaseTree\\Tests\\": "tests/"
+            "BaseTree\\": "src/"
         },
         "files": [
             "tests/utilities/helpers.php"

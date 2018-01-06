@@ -1,6 +1,6 @@
 <?php
 
-namespace BaseTree\Tests\Traits;
+namespace BaseTree\Testing\Traits;
 
 use Illuminate\Contracts\Console\Kernel;
 

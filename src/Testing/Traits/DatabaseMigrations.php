@@ -1,11 +1,11 @@
 <?php
 
 
-namespace BaseTree\Tests\Traits;
+namespace BaseTree\Testing\Traits;
 
 
 use Illuminate\Contracts\Console\Kernel;
-use BaseTree\Tests\DatabaseTestCase;
+use BaseTree\Testing\DatabaseTestCase;
 
 trait DatabaseMigrations
 {
