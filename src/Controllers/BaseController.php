@@ -1,7 +1,7 @@
 <?php
 
 
-namespace BaseTree\Controller;
+namespace BaseTree\Controllers;
 
 
 use BaseTree\Responses\HttpResponse;

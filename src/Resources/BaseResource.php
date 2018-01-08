@@ -6,9 +6,13 @@ namespace BaseTree\Resources;
 
 use BaseTree\Datatable\Creator as DatatableCreator;
 use BaseTree\Eloquent\RepositoryInterface;
-use BaseTree\Models\Model;
-use BaseTree\Resources\Contracts\ResourceCallbacks;
+use BaseTree\Models\BaseTreeModel;
+use BaseTree\Resources\Contracts\Callbacks\CreatedCallback;
+use BaseTree\Resources\Contracts\Callbacks\DeletedCallback;
+use BaseTree\Resources\Contracts\Callbacks\UpdatedCallback;
 use BaseTree\Resources\Contracts\ResourceScreen;
+use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Http\Request;
 
 class BaseResource implements ResourceScreen
@@ -52,7 +56,7 @@ class BaseResource implements ResourceScreen
         $this->datatable = app(DatatableCreator::class);
     }
 
-    public function index()
+    public function index(): Arrayable
     {
         if ($this->shouldPaginate) {
             return $this->repository->paginated();
@@ -67,19 +71,19 @@ class BaseResource implements ResourceScreen
         return $data;
     }
 
-    public function findWithoutRelations($id)
+    public function findWithoutRelations($id): BaseTreeModel
     {
         $result = $this->repository->find($id);
 
         return $this->returnOrFail($result);
     }
 
-    public function findWithRelations($id, array $relations = [])
+    public function findWithRelations($id, array $relations = []): BaseTreeModel
     {
         return $this->repository->findWithRelations($id, $relations);
     }
 
-    public function returnOrFail(Model $model = null)
+    public function returnOrFail(BaseTreeModel $model = null): BaseTreeModel
     {
         return $this->repository->returnOrFail($model);
     }
@@ -88,31 +92,40 @@ class BaseResource implements ResourceScreen
     {
         $model = $this->repository->create($attributes);
 
-        if ($this instanceof ResourceCallbacks) {
+        if ($this instanceof CreatedCallback) {
             $this->created($model, array_except($attributes, $this->fillable), $attributes);
         }
 
+        /** @var EloquentModel $model */
         return $this->show($model->getKey(), $this->relations);
     }
 
-    public function updateEntity(Model $model, array $attributes)
+    public function updateEntity(BaseTreeModel $model, array $attributes)
     {
         if ( ! empty($this->fillable)) {
             $attributes = array_except($attributes, $this->excludedOnUpdate);
             $updated = $this->repository->update($model, array_only($attributes, $this->fillable));
         }
 
-        if ($this instanceof ResourceCallbacks) {
+        if ($this instanceof UpdatedCallback) {
             $dependencies = array_except($attributes, $this->fillable) ?? [];
             $this->updated($model, $updated ?? null, $dependencies, $attributes);
         }
 
+        /** @var EloquentModel $model */
         return $this->show($model->getKey());
     }
 
-    public function destroy(Model $model)
+    public function destroy(BaseTreeModel $model, array $attributes = []): bool
     {
-        return $this->repository->delete($model);
+        /** @var EloquentModel|BaseTreeModel $model */
+        $deleted = $this->repository->delete($model);
+
+        if ($this instanceof DeletedCallback) {
+            $this->deleted($model, $attributes);
+        }
+
+        return $deleted;
     }
 
     public function show($id, array $relations = [])
@@ -134,7 +147,7 @@ class BaseResource implements ResourceScreen
         return $this->repository;
     }
 
-    public function model(): Model
+    public function model(): BaseTreeModel
     {
         return $this->repository->model();
     }

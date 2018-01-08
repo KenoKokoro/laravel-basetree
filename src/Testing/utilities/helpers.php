@@ -1,6 +1,6 @@
 <?php
 
-use BaseTree\Models\Model;
+use BaseTree\Models\BaseTreeModel;
 use Illuminate\Database\Eloquent\Collection;
 
 if ( ! function_exists('create')) {
@@ -8,7 +8,7 @@ if ( ! function_exists('create')) {
      * @param string $class
      * @param integer|null $quantity
      * @param array $attributes
-     * @return Model|Collection
+     * @return BaseTreeModel|Collection
      */
     function create($class, $quantity = null, $attributes = [])
     {
@@ -21,7 +21,7 @@ if ( ! function_exists('make')) {
      * @param string $class
      * @param integer|null $quantity
      * @param array $attributes
-     * @return Model|Collection
+     * @return BaseTreeModel|Collection
      */
     function make($class, $quantity = null, $attributes = [])
     {

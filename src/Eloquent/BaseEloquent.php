@@ -4,18 +4,20 @@
 namespace BaseTree\Eloquent;
 
 
-use BaseTree\Models\Model;
-use Exception;
+use BaseTree\Models\BaseTreeModel;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Query\Expression;
 
 class BaseEloquent implements RepositoryInterface
 {
-    /** @var Model|Builder */
+    /** @var EloquentModel|Builder */
     protected $query;
 
-    /** @var Model|Builder */
+    /** @var EloquentModel|Builder */
     protected $model;
 
     protected $perPage = self::PER_PAGE;
@@ -24,7 +26,10 @@ class BaseEloquent implements RepositoryInterface
 
     protected $defaultConstraints = [];
 
-    public function __construct(Model $model)
+    /**
+     * @param BaseTreeModel|EloquentModel $model
+     */
+    public function __construct(BaseTreeModel $model)
     {
         $this->model = $model;
         $this->query = $model->newQuery();
@@ -35,7 +40,7 @@ class BaseEloquent implements RepositoryInterface
         return $this->model->find($id);
     }
 
-    public function findByConstraints(array $constraints)
+    public function findByConstraints(array $constraints): BaseTreeModel
     {
         if (empty($constraints)) {
             throw new InvalidArgumentException('Constraint array shouldn`t be empty.');
@@ -50,8 +55,9 @@ class BaseEloquent implements RepositoryInterface
         return $this->returnOrFail($builder->first());
     }
 
-    public function findWithRelations($id, $relations = [])
+    public function findWithRelations($id, array $relations = []): BaseTreeModel
     {
+        /** @var Model|Builder $model */
         if (empty($relations)) {
             $relations = $this->relations;
         }
@@ -59,12 +65,12 @@ class BaseEloquent implements RepositoryInterface
         return $this->returnOrFail($this->find($id))->load($relations);
     }
 
-    public function all(array $columns = ['*'], array $relations = [])
+    public function all(array $columns = ['*'], array $relations = []): Collection
     {
         return $this->query->with($relations)->get($columns);
     }
 
-    public function paginated(array $columns = ['*'], $builder = null)
+    public function paginated(array $columns = ['*'], Builder $builder = null): Paginator
     {
         /** @var Builder $builder */
         if ($builder) {
@@ -74,34 +80,36 @@ class BaseEloquent implements RepositoryInterface
         return new Paginator($this->query->with($this->relations)->paginate($this->perPage, $columns));
     }
 
-    public function create(array $attributes)
+    public function create(array $attributes): BaseTreeModel
     {
         return $this->model->create($attributes);
     }
 
-    public function findOrFail($id)
+    public function findOrFail($id): BaseTreeModel
     {
         return $this->returnOrFail($this->find($id));
     }
 
-    public function getByIds(array $ids, $column = 'id')
+    public function getByIds(array $ids, string $column = 'id'): Collection
     {
         return $this->query->whereIn($column, $ids)->get();
     }
 
-    public function update(Model $model, array $attributes)
+    public function update(BaseTreeModel $model, array $attributes): BaseTreeModel
     {
+        /** @var Model|Builder $model */
         $model->update($attributes);
 
         return $model->fresh();
     }
 
-    public function delete(Model $model)
+    public function delete(BaseTreeModel $model): bool
     {
-        return $model->delete();
+        /** @var Model|Builder $model */
+        return (bool)$model->delete();
     }
 
-    public function returnOrFail(Model $model = null)
+    public function returnOrFail(BaseTreeModel $model = null): BaseTreeModel
     {
         if ( ! $model) {
             throw (new ModelNotFoundException())->setModel(get_class($this->query));
@@ -110,7 +118,7 @@ class BaseEloquent implements RepositoryInterface
         return $model;
     }
 
-    public function setRequestConstraints(array $constraints)
+    public function setRequestConstraints(array $constraints): void
     {
         $mutated = new ConstraintsMutator($constraints);
 
@@ -124,29 +132,32 @@ class BaseEloquent implements RepositoryInterface
         }
     }
 
-    public function setRequestRequirements($perPage = self::PER_PAGE, array $relations = [], array $constraints = [])
-    {
+    public function setRequestRequirements(
+        $perPage = self::PER_PAGE,
+        array $relations = [],
+        array $constraints = []
+    ): void {
         $this->perPage = $perPage;
         $this->relations = $relations;
         $this->setRequestConstraints($constraints);
     }
 
-    public function count()
+    public function count(): int
     {
         return $this->query->count();
     }
 
-    public function getFillable()
+    public function getFillable(): array
     {
         return $this->model->getFillable();
     }
 
-    public function model()
+    public function model(): BaseTreeModel
     {
         return $this->model;
     }
 
-    public function relations()
+    public function relations(): array
     {
         return $this->relations;
     }

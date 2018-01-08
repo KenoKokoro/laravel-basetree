@@ -19,7 +19,7 @@ class BaseTreeServiceProvider extends ServiceProvider
         $this->app->register(DataTablesServiceProvider::class);
         $this->app->register(ConsoleServiceProvider::class);
 
-        if ($this->app->environment() == 'local') {
+        if ($this->app->environment('local')) {
             $this->app->register(IdeHelperServiceProvider::class);
         }
 

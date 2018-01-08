@@ -4,7 +4,7 @@
 namespace BaseTree\Testing;
 
 
-use BaseTree\Models\Model;
+use BaseTree\Models\BaseTreeModel;
 use BaseTree\Testing\Traits\Assertions\FieldValidationMessages;
 use BaseTree\Testing\Traits\CreatesApplication;
 use BaseTree\Testing\Traits\DatabaseMigrations;
@@ -23,7 +23,7 @@ class DatabaseTestCase extends TestCase
 {
     use CreatesApplication, DatabaseMigrations, HelperMethods, FieldValidationMessages;
 
-    protected function assertCRUD(Model $model, array $attrs, array $updateAttrs)
+    protected function assertCRUD(BaseTreeModel $model, array $attrs, array $updateAttrs)
     {
         $this->assertCreated($model, $attrs);
         $this->assertUpdated($model, $attrs, $updateAttrs);
@@ -32,28 +32,28 @@ class DatabaseTestCase extends TestCase
 
     protected function assertCreated($model, array $attrs)
     {
-        if ( ! is_a($model, Model::class)) {
+        if ( ! is_a($model, BaseTreeModel::class)) {
             $this->assertDatabaseHas($model, $attrs);
 
             return;
         }
-        /** @var Model $model */
+        /** @var BaseTreeModel $model */
         $this->assertDatabaseHas($model->getTable(), $attrs);
     }
 
     protected function assertDeleted($model, array $attrs)
     {
-        if ( ! is_a($model, Model::class)) {
+        if ( ! is_a($model, BaseTreeModel::class)) {
             $this->assertDatabaseMissing($model, $attrs);
 
             return;
         }
-        /** @var Model $model */
+        /** @var BaseTreeModel $model */
         $model->delete();
         $this->assertDatabaseMissing($model->getTable(), $attrs);
     }
 
-    protected function assertUpdated(Model $model, array $attrs, array $updateAttrs)
+    protected function assertUpdated(BaseTreeModel $model, array $attrs, array $updateAttrs)
     {
         $model->update($updateAttrs);
         $this->assertCreated($model->getTable(), array_merge($attrs, $updateAttrs));
@@ -65,14 +65,14 @@ class DatabaseTestCase extends TestCase
         $this->assertEquals(0, $collection->count());
     }
 
-    protected function assertBelongsTo(Model $model, Model $relationModel, $relationName, array $attrsToCheck)
+    protected function assertBelongsTo(BaseTreeModel $model, BaseTreeModel $relationModel, $relationName, array $attrsToCheck)
     {
         $this->assertCreated($model, $attrsToCheck);
         $this->assertEquals($relationModel->id, $model->{ucfirst($relationName)}->id);
         $this->assertInstanceOf(BelongsTo::class, $model->{$relationName}());
     }
 
-    protected function assertHasOne(Model $model, Model $relationModel, $relationName, array $attrsToCheck)
+    protected function assertHasOne(BaseTreeModel $model, BaseTreeModel $relationModel, $relationName, array $attrsToCheck)
     {
         $this->assertCreated($relationModel, $attrsToCheck);
         $this->assertEquals($relationModel->id, $model->{ucfirst($relationName)}->id);
@@ -80,7 +80,7 @@ class DatabaseTestCase extends TestCase
     }
 
     protected function assertBelongsToMany(
-        Model $model,
+        BaseTreeModel $model,
         Collection $relatedCollection,
         $relationName,
         $pivotTable,
@@ -100,7 +100,7 @@ class DatabaseTestCase extends TestCase
     }
 
     protected function assertHasMany(
-        Model $model,
+        BaseTreeModel $model,
         Collection $relatedCollection,
         $relationName,
         $attrsCheck,
@@ -112,7 +112,7 @@ class DatabaseTestCase extends TestCase
         $this->assertInstanceOf(HasMany::class, $model->{$relationName}());
     }
 
-    protected function assertMorphTo(Model $model, Model $relationModel, $key, array $attrsCheck = [])
+    protected function assertMorphTo(BaseTreeModel $model, BaseTreeModel $relationModel, $key, array $attrsCheck = [])
     {
         $defaultAttrs = [
             "{$key}_id" => $relationModel->id,
@@ -127,7 +127,7 @@ class DatabaseTestCase extends TestCase
     }
 
     protected function assertMorphMany(
-        Model $model,
+        BaseTreeModel $model,
         Collection $relatedCollection,
         $key,
         $relationName,

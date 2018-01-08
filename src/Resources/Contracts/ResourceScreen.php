@@ -5,8 +5,10 @@ namespace BaseTree\Resources\Contracts;
 
 
 use BaseTree\Eloquent\RepositoryInterface;
-use BaseTree\Models\Model;
+use BaseTree\Models\BaseTreeModel;
+use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
@@ -15,51 +17,54 @@ interface ResourceScreen
     /**
      * @return mixed
      */
-    public function index();
+    public function index(): Arrayable;
 
     /**
      * @param integer $id
-     * @return Model
+     * @throws ModelNotFoundException
+     * @return BaseTreeModel
      */
-    public function findWithoutRelations($id);
+    public function findWithoutRelations($id): BaseTreeModel;
 
     /**
      * @param integer $id
      * @param array $relations
-     * @return Model
+     * @throws ModelNotFoundException
+     * @return BaseTreeModel
      */
-    public function findWithRelations($id, array $relations = []);
+    public function findWithRelations($id, array $relations = []): BaseTreeModel;
 
     /**
-     * @param Model $model
-     * @return Model
+     * @param BaseTreeModel $model
      * @throws ModelNotFoundException
+     * @return BaseTreeModel|Model
      */
-    public function returnOrFail(Model $model = null);
+    public function returnOrFail(BaseTreeModel $model = null): BaseTreeModel;
 
     /**
      * @param array $attributes
-     * @return Builder|Model
+     * @return Builder|BaseTreeModel
      */
     public function store(array $attributes);
 
     /**
-     * @param Model $model
+     * @param BaseTreeModel $model
      * @param array $attributes
-     * @return Model|Builder
+     * @return BaseTreeModel|Builder
      */
-    public function updateEntity(Model $model, array $attributes);
+    public function updateEntity(BaseTreeModel $model, array $attributes);
 
     /**
-     * @param Model $model
+     * @param BaseTreeModel $model
+     * @param array $attributes
      * @return boolean
      */
-    public function destroy(Model $model);
+    public function destroy(BaseTreeModel $model, array $attributes = []): bool;
 
     /**
      * @param $id
      * @param array $relations
-     * @return Builder|Model
+     * @return Builder|BaseTreeModel
      */
     public function show($id, array $relations = []);
 
@@ -75,9 +80,9 @@ interface ResourceScreen
     public function repository(): RepositoryInterface;
 
     /**
-     * @return Model
+     * @return BaseTreeModel
      */
-    public function model(): Model;
+    public function model(): BaseTreeModel;
 
     /**
      * @return string

@@ -4,11 +4,11 @@
 namespace BaseTree\Eloquent;
 
 
+use Illuminate\Contracts\Pagination\LengthAwarePaginator as LengthAwarePaginatorContract;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator as LengthAwarePaginatorContract;
 use JsonSerializable;
 
 class Paginator implements Arrayable, JsonSerializable, Jsonable

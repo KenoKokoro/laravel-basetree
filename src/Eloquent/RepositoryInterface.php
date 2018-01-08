@@ -4,9 +4,10 @@
 namespace BaseTree\Eloquent;
 
 
-use BaseTree\Models\Model;
+use BaseTree\Models\BaseTreeModel;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 interface RepositoryInterface
@@ -15,81 +16,84 @@ interface RepositoryInterface
 
     /**
      * @param $id
-     * @return Model
+     * @return BaseTreeModel
      */
     public function find($id);
 
     /**
      * @param array $constraints
-     * @return Model
+     * @throws InvalidArgumentException
+     * @throws ModelNotFoundException
+     * @return BaseTreeModel
      */
-    public function findByConstraints(array $constraints);
+    public function findByConstraints(array $constraints): BaseTreeModel;
 
     /**
      * @param $id
      * @param array $relations
-     * @return Model
+     * @throws ModelNotFoundException
+     * @return BaseTreeModel
      */
-    public function findWithRelations($id, $relations = []);
+    public function findWithRelations($id, array $relations = []): BaseTreeModel;
 
     /**
      * @param array $columns
      * @param array $relations
      * @return Collection
      */
-    public function all(array $columns = ['*'], array $relations = []);
+    public function all(array $columns = ['*'], array $relations = []): Collection;
 
     /**
      * @param array $columns
-     * @param null $builder
+     * @param Builder|null $builder
      * @return Paginator
      */
-    public function paginated(array $columns = ['*'], $builder = null);
+    public function paginated(array $columns = ['*'], Builder $builder = null): Paginator;
 
     /**
      * @param array $attributes
-     * @return Model
+     * @return BaseTreeModel
      */
-    public function create(array $attributes);
+    public function create(array $attributes): BaseTreeModel;
 
     /**
      * @param $id
-     * @return Model
+     * @return BaseTreeModel
      */
-    public function findOrFail($id);
+    public function findOrFail($id): BaseTreeModel;
 
     /**
      * @param array $ids
      * @param string $column
      * @return Collection
      */
-    public function getByIds(array $ids, $column = 'id');
+    public function getByIds(array $ids, string $column = 'id'): Collection;
 
     /**
-     * @param Model $model
+     * @param BaseTreeModel $model
      * @param array $attributes
-     * @return Model
+     * @return BaseTreeModel
      */
-    public function update(Model $model, array $attributes);
+    public function update(BaseTreeModel $model, array $attributes): BaseTreeModel;
 
     /**
-     * @param Model $model
-     * @return boolean
+     * @param BaseTreeModel $model
+     * @return bool
      */
-    public function delete(Model $model);
+    public function delete(BaseTreeModel $model): bool;
 
     /**
      * @param $model
      * @throws ModelNotFoundException
-     * @return Model
+     * @return BaseTreeModel|Model
      */
-    public function returnOrFail(Model $model = null);
+    public function returnOrFail(BaseTreeModel $model = null): BaseTreeModel;
 
     /**
      * @param array $constraints
      * @return Builder
      */
-    public function setRequestConstraints(array $constraints);
+    public function setRequestConstraints(array $constraints): void;
 
     /**
      * @param int $perPage
@@ -97,25 +101,29 @@ interface RepositoryInterface
      * @param array $constraints
      * @return void
      */
-    public function setRequestRequirements($perPage = self::PER_PAGE, array $relations = [], array $constraints = []);
+    public function setRequestRequirements(
+        $perPage = self::PER_PAGE,
+        array $relations = [],
+        array $constraints = []
+    ): void;
 
     /**
      * @return integer
      */
-    public function count();
+    public function count(): int;
 
     /**
      * @return array
      */
-    public function getFillable();
+    public function getFillable(): array;
 
     /**
-     * @return Model
+     * @return BaseTreeModel
      */
-    public function model();
+    public function model(): BaseTreeModel;
 
     /**
      * @return array
      */
-    public function relations();
+    public function relations(): array;
 }

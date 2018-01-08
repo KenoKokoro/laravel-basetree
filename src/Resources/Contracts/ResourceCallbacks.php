@@ -4,26 +4,10 @@
 namespace BaseTree\Resources\Contracts;
 
 
-use BaseTree\Models\Model;
+use BaseTree\Resources\Contracts\Callbacks\CreatedCallback;
+use BaseTree\Resources\Contracts\Callbacks\DeletedCallback;
+use BaseTree\Resources\Contracts\Callbacks\UpdatedCallback;
 
-interface ResourceCallbacks
+interface ResourceCallbacks extends CreatedCallback, UpdatedCallback, DeletedCallback
 {
-    /**
-     * Used as callback when entity is created
-     * @param Model $model
-     * @param array $dependencyAttributes
-     * @param array $attributes
-     * @return void
-     */
-    public function created(Model $model, array $dependencyAttributes = [], array $attributes);
-
-    /**
-     * Used as callback when entity is updated
-     * @param Model $before
-     * @param Model|null $updated
-     * @param array $dependencyAttributes
-     * @param array $attributes
-     * @return void
-     */
-    public function updated(Model $before, Model $updated = null, array $dependencyAttributes = [], array $attributes);
 }
