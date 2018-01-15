@@ -11,7 +11,7 @@ class PublishBoilerplate extends Command
 {
     const OPTION_DOCKER = 'docker-compose';
 
-    protected $signature = "publish:base-tree
+    protected $signature = "basetree:boilerplates
                             {--" . self::OPTION_DOCKER . " : Publish the docker structure}";
 
     protected $description = "Publish some already predefined environments.

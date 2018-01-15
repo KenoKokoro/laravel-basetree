@@ -5,15 +5,17 @@ namespace BaseTree\Console\Generators\BLL;
 
 
 use BaseTree\Console\Generators\BaseGenerator;
+use BaseTree\Resources\Contracts\ResourceCallbacks;
+use BaseTree\Resources\Contracts\ResourceValidations;
 
 class GenerateBll extends BaseGenerator
 {
     const STUB = 'StubBll.stub';
 
-    const OPTION_DAL = 'dal';
+    const OPTION_DAL = 'dal-interface';
     const OPTION_MODEL = 'model';
 
-    protected $signature = "generate:base-tree-bll
+    protected $signature = "basetree:bll
                             {--" . self::OPTION_MODEL . "= : Fully qualified model name including namespace}
                             {--" . self::OPTION_DAL . "= : Fully qualified data access layer name including namespace}
                             {--" . parent::OPTION_FOLDER . "=app/BLL/ : Folder where to create the BLL}
@@ -33,7 +35,12 @@ class GenerateBll extends BaseGenerator
         $folder = $this->option(parent::OPTION_FOLDER);
         $stub = $this->stubPath . self::STUB;
         $file = $this->writeFromStub($stub, base_path($this->modify($folder)), parent::KEY_BLL_NAME);
-        $this->info("BLL created: {$file}");
+        if ( ! empty($file)) {
+            $this->info("BLL created: {$file}");
+        }
+        $this->comment("");
+        $this->comment("NOTE: If you need validations, implement interface: " . ResourceValidations::class);
+        $this->comment("NOTE: If you need callback actions, implement interface: " . ResourceCallbacks::class);
     }
 
     protected function extractModifiers()

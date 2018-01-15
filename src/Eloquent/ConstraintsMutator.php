@@ -46,7 +46,11 @@ class ConstraintsMutator
     protected function raw($column, $operator, $value): Expression
     {
         # TODO: Inspect raw for security
-        return DB::raw("{$column} {$operator} {$value}");
+        if ($this->isColumn($value)) {
+            return DB::raw("`{$column}` {$operator} {$value}");
+        }
+
+        return DB::raw("`{$column}` {$operator} '{$value}'");
     }
 
     protected function explode(string $constraint): array
@@ -58,5 +62,10 @@ class ConstraintsMutator
         }
 
         return [$column = $arguments[0], $operation = $arguments[1], $value = $arguments[2]];
+    }
+
+    protected function isColumn(string $value): bool
+    {
+        return ! ! preg_match("/^\`.+\`$/", $value);
     }
 }

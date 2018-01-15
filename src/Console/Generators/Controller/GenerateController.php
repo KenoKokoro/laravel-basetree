@@ -13,7 +13,7 @@ class GenerateController extends BaseGenerator
     const OPTION_BLL = 'bll';
     const OPTION_MODEL_PLURAL = 'model-plural';
 
-    protected $signature = "generate:base-tree-controller
+    protected $signature = "basetree:controller
                             {--" . self::OPTION_MODEL_PLURAL . "= : Plural form of the model name. For instance if the model is User, you should send here Users}
                             {--" . self::OPTION_BLL . "= : Fully qualified business logic layer name including namespace}
                             {--" . parent::OPTION_FOLDER . "=app/Http/Controllers/Api/ : Folder where to create the controller}
@@ -33,7 +33,11 @@ class GenerateController extends BaseGenerator
         $folder = $this->option(parent::OPTION_FOLDER);
         $stub = $this->stubPath . self::STUB;
         $file = $this->writeFromStub($stub, base_path($this->modify($folder)), parent::KEY_CONTROLLER_NAME);
-        $this->info("Controller created: {$file}");
+        if ( ! empty($file)) {
+            $this->info("Controller created: {$file}");
+        }
+        $this->comment("");
+        $this->comment("NOTE: Don't forget your routes!");
     }
 
     protected function extractModifiers()

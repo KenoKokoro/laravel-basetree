@@ -17,7 +17,7 @@ class GenerateDal extends BaseGenerator
     const OPTION_DAL_FOLDER = 'dal-folder';
     const OPTION_DAL_NAMESPACE = 'dal-namespace';
 
-    protected $signature = "generate:base-tree-dal
+    protected $signature = "basetree:dal
                             {--" . self::OPTION_MODEL . "= : Fully qualified model name including the namespace}
                             {--" . self::OPTION_INTERFACE_FOLDER . "=app/DAL/[model-name] : Folder where to create the DAL interface}
                             {--" . self::OPTION_INTERFACE_NAMESPACE . "=App\DAL\[model-name] : Namespace to create the DAL interface under}
@@ -37,6 +37,8 @@ class GenerateDal extends BaseGenerator
     {
         $this->createInterface($this->option(self::OPTION_INTERFACE_FOLDER));
         $this->createImplementation($this->option(self::OPTION_DAL_FOLDER));
+        $this->comment("");
+        $this->comment("NOTE: Do not forget to bind this in your service provider!");
     }
 
     protected function extractModifiers()
@@ -58,13 +60,17 @@ class GenerateDal extends BaseGenerator
     {
         $stub = $this->stubPath . self::INTERFACE_STUB;
         $file = $this->writeFromStub($stub, base_path($this->modify($folder)), parent::KEY_DAL_INTERFACE_NAME);
-        $this->info("DAL Interface created: {$file}");
+        if ( ! empty($file)) {
+            $this->info("DAL Interface created: {$file}");
+        }
     }
 
     protected function createImplementation(string $folder)
     {
         $stub = $this->stubPath . self::DAL_STUB;
         $file = $this->writeFromStub($stub, base_path($this->modify($folder)), parent::KEY_DAL_NAME);
-        $this->info("DAL Implementation created: {$file}");
+        if ( ! empty($file)) {
+            $this->info("DAL Implementation created: {$file}");
+        }
     }
 }
