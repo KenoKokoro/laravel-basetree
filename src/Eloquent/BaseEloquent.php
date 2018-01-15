@@ -112,7 +112,7 @@ class BaseEloquent implements RepositoryInterface
     public function returnOrFail(BaseTreeModel $model = null): BaseTreeModel
     {
         if ( ! $model) {
-            throw (new ModelNotFoundException())->setModel(get_class($this->query));
+            throw (new ModelNotFoundException())->setModel(get_class($this->model));
         }
 
         return $model;
