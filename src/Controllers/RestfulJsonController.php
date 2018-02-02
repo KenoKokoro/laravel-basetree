@@ -7,6 +7,9 @@ namespace BaseTree\Controllers;
 use BaseTree\Resources\Contracts\ResourceCallbacks;
 use BaseTree\Resources\Contracts\ResourceScreen;
 use BaseTree\Resources\Contracts\ResourceValidations;
+use BaseTree\Resources\Contracts\Validations\DestroyValidation;
+use BaseTree\Resources\Contracts\Validations\StoreValidation;
+use BaseTree\Resources\Contracts\Validations\UpdateValidation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -39,7 +42,7 @@ class RestfulJsonController extends BaseController
 
     public function store(Request $request)
     {
-        if ($this->resource instanceof ResourceValidations) {
+        if ($this->resource instanceof StoreValidation) {
             $this->validate($request, $this->resource->storeRules($request));
         }
 
@@ -54,7 +57,7 @@ class RestfulJsonController extends BaseController
     {
         $entity = $this->resource->findWithoutRelations($id);
 
-        if ($this->resource instanceof ResourceValidations) {
+        if ($this->resource instanceof UpdateValidation) {
             $this->validate($request, $this->resource->updateRules($id, $request));
         }
 
@@ -69,7 +72,7 @@ class RestfulJsonController extends BaseController
     {
         $entity = $this->resource->findWithoutRelations($id);
 
-        if ($this->resource instanceof ResourceValidations) {
+        if ($this->resource instanceof DestroyValidation) {
             $this->validate($request, $this->resource->destroyRules($id, $request));
         }
 

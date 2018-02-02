@@ -22,7 +22,7 @@ services:
   mariadb:
     image: mariadb:10.3
     volumes:
-      - "/opt/mariadb:/var/lib/mariadb:rw"
+      - "/opt/mariadb:/var/lib/mysql:rw"
     environment:
       - "MYSQL_DATABASE=${DB_DATABASE}"
       - "MYSQL_USER=${DB_USERNAME}"
