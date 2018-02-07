@@ -4,16 +4,16 @@ services:
     working_dir: "${CONTAINER_ROOT}"
     build:
       context: docker
-      dockerfile: docker/local.Dockerfile
+      dockerfile: local.Dockerfile
     links:
       - mariadb
     volumes:
       - .:${CONTAINER_ROOT}
-      - ./docker/local/conf/supervisord.conf:/etc/supervisord.conf
-      - ./docker/local/conf/nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./docker/local/conf/nginx/default.conf:/etc/nginx/sites/application.conf
-      - ./docker/local/scripts/start.sh:/start.sh
-      - ./docker/local/conf/php:/usr/local/etc/php/conf
+      - ./docker/${APP_ENV}/conf/supervisord.conf:/etc/supervisord.conf
+      - ./docker/${APP_ENV}/conf/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./docker/${APP_ENV}/conf/nginx/default.conf:/etc/nginx/sites/application.conf
+      - ./docker/${APP_ENV}/scripts/start.sh:/start.sh
+      - ./docker/${APP_ENV}/conf/php:/usr/local/etc/php/conf
     ports:
       - ${NGINX_PORT}:80
     environment:
