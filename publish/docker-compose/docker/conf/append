@@ -1,3 +1,0 @@
-acl has_trailing_slash path_end  /
-reqrep ^(.*)[\ /]$ \1
-redirect prefix / code 301 if has_trailing_slash
