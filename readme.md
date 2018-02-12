@@ -20,7 +20,7 @@ in business logic layer and data access layer, which results in much cleaner cod
 1. Error handling just by extension of the `BaseTree\Exception\Handler.php`
 2. Base controller with required methods `BaseTree\Controller\RestfulJsonController.php`
 3. Base resource which is basically a class dedicated for the business logic 
-on given Model `BaseTree\Resources\Base.php`
+on given Model `BaseTree\Resources\BaseResource.php`
 4. Generic separated classes for http or json response.
 5. Basic Model which is used in every resource and data access layer `BaseTree\Models\Model.php`.
 Created models should extend this model.
@@ -128,10 +128,10 @@ you can keep you model resources. ([Automatic creation](#artisan-generators))
     ```php
         namespace App\Resources;
         
-        use BaseTree\Resources\Base;
+        use BaseTree\Resources\BaseResource
         use App\DAL\FooRepository;
         
-        class FooResource extends Base 
+        class FooResource extends BaseResource
         {
             public function __construct(FooRepository $repository) 
             {
@@ -293,10 +293,10 @@ to generate slug for you resource which only has name as value, in your `app\Res
 ```php
     namespace App\Resources;
     
-    use BaseTree\Resources\Base;
+    use BaseTree\Resources\BaseResource;
     use App\DAL\FooRepository;
     
-    class FooResource extends Base 
+    class FooResource extends BaseResource
     {
         public function __construct(FooRepository $repository) 
         {
@@ -395,10 +395,10 @@ for the required variables to make the docker containers just work.
     After all this is set up, you will have to run `docker-compose up -d` and wait for the build to finish. Check your containers
     status by running `docker-compose ps`. You will have to see something like this:
     ```php
-            Name                             Command                          State                    Ports                
+            Name               Command                          State               Ports                
     ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
-    tutorial_app_1                docker-php-entrypoint /sta ...       Up           443/tcp, 0.0.0.0:80->80/tcp, 9000/tcp
-    tutorial_mariadb_1          docker-entrypoint.sh mysqld       Up           0.0.0.0:3307->3306/tcp               
+    tutorial_app_1         docker-php-entrypoint /sta ...       Up           443/tcp, 0.0.0.0:80->80/tcp, 9000/tcp
+    tutorial_mariadb_1     docker-entrypoint.sh mysqld          Up           0.0.0.0:3307->3306/tcp               
     tutorial_phpmyadmin_1  /run.sh phpmyadmin                   Up           0.0.0.0:81->80/tcp 
     ```
 
