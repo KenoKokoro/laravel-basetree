@@ -1,42 +1,46 @@
 {
-    "name": "kenokokoro/laravel-basetree",
-    "description": "Initial base structure for extending while building laravel application",
-    "type": "library",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Stefan Brankovikj",
-            "email": "stefan.brankovikj@cosmicdevelopment.com"
-        }
-    ],
-    "autoload": {
-        "psr-4": {
-            "BaseTree\\": "src/"
-        },
-        "files": [
-            "src/Testing/utilities/helpers.php"
-        ]
+  "name": "kenokokoro/laravel-basetree",
+  "description": "Initial base structure for extending while building laravel application",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Stefan Brankovikj",
+      "email": "stefan.brankovikj@cosmicdevelopment.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "BaseTree\\": "src/"
     },
-    "require": {
-        "laravel/framework": "^5.0",
-        "barryvdh/laravel-ide-helper": "^2.4",
-        "yajra/laravel-datatables-oracle": "~8.0"
-    },
-    "require-dev": {
-        "mockery/mockery": "0.9.*",
-        "phpunit/phpunit": "~6.0"
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "BaseTree\\Providers\\BaseTreeServiceProvider"
-            ],
-            "aliases": {
-                "Json": "BaseTree\\Responses\\Facades\\JsonResponse",
-                "Http": "BaseTree\\Responses\\Facades\\HttpResponse"
-            }
-        }
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true
+    "files": [
+      "src/Testing/utilities/helpers.php"
+    ]
+  },
+  "require": {
+    "illuminate/contracts": "^5.0",
+    "illuminate/console": "^5.0",
+    "illuminate/container": "^5.0",
+    "illuminate/http": "^5.0",
+    "illuminate/support": "^5.0",
+    "barryvdh/laravel-ide-helper": "^2.4",
+    "yajra/laravel-datatables-oracle": "~8.0"
+  },
+  "require-dev": {
+    "mockery/mockery": "0.9.*",
+    "phpunit/phpunit": "~6.0"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "BaseTree\\Providers\\BaseTreeServiceProvider"
+      ],
+      "aliases": {
+        "Json": "BaseTree\\Responses\\Facades\\JsonResponse",
+        "Http": "BaseTree\\Responses\\Facades\\HttpResponse"
+      }
+    }
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true
 }
