@@ -11,12 +11,8 @@ class JsonResponse extends LaravelJsonResponse
     const STATUS_TRUE = true;
     const STATUS_FALSE = false;
 
-    private $status = self::STATUS_TRUE;
-
     public function success(string $message = '', array $append = []): parent
     {
-        $this->status = self::STATUS_TRUE;
-
         if (empty($message)) {
             $message = 'Successfully executed.';
         }
@@ -31,7 +27,6 @@ class JsonResponse extends LaravelJsonResponse
 
     public function created(string $message = '', array $append = []): parent
     {
-        $this->status = self::STATUS_TRUE;
         if (empty($message)) {
             $message = 'Successfully created.';
         }
@@ -46,7 +41,6 @@ class JsonResponse extends LaravelJsonResponse
 
     public function forbidden(string $message = ''): parent
     {
-        $this->status = self::STATUS_FALSE;
         if (empty($message)) {
             $message = 'Forbidden.';
         }
@@ -57,7 +51,6 @@ class JsonResponse extends LaravelJsonResponse
 
     public function unauthorized(string $message = ''): parent
     {
-        $this->status = self::STATUS_FALSE;
         if (empty($message)) {
             $message = 'Unauthorized.';
         }
@@ -68,7 +61,6 @@ class JsonResponse extends LaravelJsonResponse
 
     public function unprocessableEntity(string $message = '', array $append = []): parent
     {
-        $this->status = self::STATUS_FALSE;
         if (empty($message)) {
             $message = 'Unprocessable entity.';
         }
@@ -83,7 +75,6 @@ class JsonResponse extends LaravelJsonResponse
 
     public function notFound(string $message = ''): parent
     {
-        $this->status = self::STATUS_FALSE;
         if (empty($message)) {
             $message = 'Not found.';
         }
@@ -93,7 +84,6 @@ class JsonResponse extends LaravelJsonResponse
 
     public function internalError(string $message = ''): parent
     {
-        $this->status = self::STATUS_FALSE;
         if (empty($message)) {
             $message = 'Internal error.';
         }
@@ -104,7 +94,6 @@ class JsonResponse extends LaravelJsonResponse
     private function getResponse(string $message): array
     {
         return [
-            'status' => $this->status,
             'message' => $message
         ];
     }

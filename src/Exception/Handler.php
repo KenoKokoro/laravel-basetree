@@ -48,7 +48,7 @@ class Handler extends LaravelHandler
     }
 
     /**
-     * @param Request $request
+     * @param Request   $request
      * @param Exception $exception
      * @return mixed
      */
@@ -72,9 +72,9 @@ class Handler extends LaravelHandler
             return Json::notFound($exception->getMessage());
         } elseif ($exception instanceof AuthorizationException
                   or $exception instanceof UnauthorizedHttpException) {
-            return Json::unauthorized($exception->getMessage());
-        } elseif ($exception instanceof AuthenticationException) {
             return Json::forbidden($exception->getMessage());
+        } elseif ($exception instanceof AuthenticationException) {
+            return Json::unauthorized($exception->getMessage());
         } elseif ($exception instanceof NotFoundHttpException) {
             return Json::internalError('Route does not exist.');
         } elseif ($exception instanceof MethodNotAllowedHttpException) {
