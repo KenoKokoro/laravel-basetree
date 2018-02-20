@@ -19,6 +19,7 @@
     ]
   },
   "require": {
+    "barryvdh/laravel-ide-helper": "^2.4",
     "illuminate/contracts": "^5.0",
     "illuminate/console": "^5.0",
     "illuminate/container": "^5.0",
@@ -28,7 +29,6 @@
   },
   "require-dev": {
     "mockery/mockery": "0.9.*",
-    "barryvdh/laravel-ide-helper": "^2.4",
     "phpunit/phpunit": "~6.0"
   },
   "extra": {
