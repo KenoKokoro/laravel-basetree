@@ -18,13 +18,12 @@
       "src/Testing/utilities/helpers.php"
     ]
   },
-  "autoload-dev": {
-    "psr-4": {
-      "BaseTree\\Tests\\": "tests/"
-    },
-  },
   "require": {
-    "laravel/framework": "^5.0",
+    "illuminate/contracts": "^5.0",
+    "illuminate/console": "^5.0",
+    "illuminate/container": "^5.0",
+    "illuminate/http": "^5.0",
+    "illuminate/support": "^5.0",
     "yajra/laravel-datatables-oracle": "~8.0"
   },
   "require-dev": {
