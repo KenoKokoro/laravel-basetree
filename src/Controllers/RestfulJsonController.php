@@ -28,6 +28,7 @@ class RestfulJsonController extends BaseController
 
     public function index()
     {
+        $this->checkAccess('view', $this->resource->authorizationKey(), $this->resource->model());
         $entities = $this->resource->index();
 
         return $this->response()->success('', ['data' => $entities]);
@@ -36,12 +37,14 @@ class RestfulJsonController extends BaseController
     public function show(Request $request, $id)
     {
         $entity = $this->resource->show($id, $request->get('fields') ?? []);
+        $this->checkAccess('manage', $this->resource->authorizationKey(), $entity);
 
         return $this->response()->success('', ['data' => $entity]);
     }
 
     public function store(Request $request)
     {
+        $this->checkAccess('manage', $this->resource->authorizationKey(), $this->resource->model());
         if ($this->resource instanceof StoreValidation) {
             $this->validate($request, $this->resource->storeRules($request));
         }
@@ -56,6 +59,7 @@ class RestfulJsonController extends BaseController
     public function update(Request $request, $id)
     {
         $entity = $this->resource->findWithoutRelations($id);
+        $this->checkAccess('manage', $this->resource->authorizationKey(), $entity);
 
         if ($this->resource instanceof UpdateValidation) {
             $this->validate($request, $this->resource->updateRules($id, $request));
@@ -71,6 +75,7 @@ class RestfulJsonController extends BaseController
     public function destroy(Request $request, $id)
     {
         $entity = $this->resource->findWithoutRelations($id);
+        $this->checkAccess('manage', $this->resource->authorizationKey(), $entity);
 
         if ($this->resource instanceof DestroyValidation) {
             $this->validate($request, $this->resource->destroyRules($id, $request));

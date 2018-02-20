@@ -17,6 +17,8 @@ class BaseController extends Controller
 
     protected $response;
 
+    protected $permission;
+
     /**
      * @return JsonResponse|HttpResponse
      */
@@ -27,5 +29,12 @@ class BaseController extends Controller
         }
 
         return new HttpResponse;
+    }
+
+    protected function checkAccess(string $ability, string $key, $model = null): void
+    {
+        if (config('base-tree.authorization')) {
+            $this->authorize($ability, [$key, $this->permission, $model]);
+        }
     }
 }

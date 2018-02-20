@@ -12,4 +12,9 @@ class BaseControllerTestWrapper extends BaseController
     {
         return parent::response();
     }
+
+    public function testCheckAccess(string $ability, string $key, $model = null)
+    {
+        return parent::checkAccess($ability, $key, $model);
+    }
 }
