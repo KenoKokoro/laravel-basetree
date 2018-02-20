@@ -31,6 +31,7 @@ class PublishBoilerplate extends Command
         $path = $this->path . self::OPTION_DOCKER;
         File::copyDirectory($path, base_path());
         $this->info("Docker compose structure is published.");
+        $this->warn("NOTE: Check the vendor/kenokokoro/laravel-basetree/publish/.env.docker-compose.example to set the required variables!");
         $this->info("Please set your DOCKER_HOST_UID=1000 in your .env file. (You can find your UID using echo \$UID in your terminal)");
         $this->info("Please set your DOCKER_HOST_GID=1000 in your .env file. (You can find your GID using echo \$GID in your terminal)");
         $this->info("Set your DB_HOST=mariadb in your .env file");

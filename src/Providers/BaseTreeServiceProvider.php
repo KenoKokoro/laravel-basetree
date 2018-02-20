@@ -15,6 +15,18 @@ class BaseTreeServiceProvider extends ServiceProvider
 {
     public function register()
     {
+        $this->registerProviders();
+        $this->registerConfig();
+
+        if (config('base-tree.log')) {
+            $this->registerLogger();
+        }
+
+        $this->loadAliases();
+    }
+
+    private function registerProviders()
+    {
         $this->app->register(ResponseServiceProvider::class);
         $this->app->register(DataTablesServiceProvider::class);
         $this->app->register(ConsoleServiceProvider::class);
@@ -22,12 +34,25 @@ class BaseTreeServiceProvider extends ServiceProvider
         if ($this->app->environment('local')) {
             $this->app->register(IdeHelperServiceProvider::class);
         }
+    }
 
-        $this->loadAliases();
+    private function registerConfig()
+    {
+        $this->publishes([__DIR__ . '/../../config/base-tree.php' => config_path('base-tree.php')]);
+        $this->mergeConfigFrom(__DIR__ . '/../../config/base-tree.php', 'base-tree');
     }
 
     private function loadAliases()
     {
         $this->app->alias(DataTables::class, 'DataTables');
+    }
+
+    private function registerLogger()
+    {
+        if ( ! class_exists(BaseTreeLoggerServiceProvider::class)) {
+            throw new \Exception("Logger is enabled, but package is not installed\n Please require the kenokokoro/laravel-basetree-logger package");
+        }
+
+        $this->app->register(BaseTreeLoggerServiceProvider::class);
     }
 }

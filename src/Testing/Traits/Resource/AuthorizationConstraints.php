@@ -1,12 +1,11 @@
 <?php
 
 
-namespace Tests\Traits\Resource;
+namespace BaseTree\Testing\Traits\Resource;
 
 
-use App\Models\Auth\User;
-use App\Modules\Responses\JsonResponse;
 use Illuminate\Foundation\Testing\TestResponse;
+use Illuminate\Http\JsonResponse;
 
 trait AuthorizationConstraints
 {
@@ -15,7 +14,7 @@ trait AuthorizationConstraints
     {
         $uri = route("{$this->routeKey}.index");
         /** @var User $auth */
-        $auth = create(User::class);
+        $auth = create(config('base-tree.auth-model'));
 
         /** @var TestResponse $response */
         $response = $this->getJson($uri, $this->jwtAuthHeader($auth));
@@ -27,7 +26,7 @@ trait AuthorizationConstraints
     {
         $uri = route("{$this->routeKey}.store");
         /** @var User $auth */
-        $auth = create(User::class);
+        $auth = create(config('base-tree.auth-model'));
 
         /** @var TestResponse $response */
         $response = $this->postJson($uri, [], $this->jwtAuthHeader($auth));
@@ -39,7 +38,7 @@ trait AuthorizationConstraints
     {
         $uri = route("{$this->routeKey}.destroy", [1]);
         /** @var User $auth */
-        $auth = create(User::class);
+        $auth = create(config('base-tree.auth-model'));
 
         /** @var TestResponse $response */
         $response = $this->jsonDestroy($uri, [], $this->jwtAuthHeader($auth));

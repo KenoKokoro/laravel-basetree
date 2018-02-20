@@ -4,6 +4,7 @@
 namespace BaseTree\Responses;
 
 
+use BaseTree\Modules\Log\ClientLogger;
 use Illuminate\Http\JsonResponse as LaravelJsonResponse;
 
 class JsonResponse extends LaravelJsonResponse
@@ -100,6 +101,14 @@ class JsonResponse extends LaravelJsonResponse
 
     private function parentInstance(array $data, int $code): parent
     {
-        return new parent($data, $code);
+        $response = new parent($data, $code);
+
+        if (config('base-tree.log')) {
+            /** @var ClientLogger $logger */
+            $logger = app(ClientLogger::class);
+            $logger->writeIncoming($response, request());
+        }
+
+        return $response;
     }
 }
