@@ -12,7 +12,9 @@ use BaseTree\Resources\Contracts\Callbacks\DeletedCallback;
 use BaseTree\Resources\Contracts\Callbacks\UpdatedCallback;
 use BaseTree\Resources\Contracts\ResourceScreen;
 use Illuminate\Contracts\Support\Arrayable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 
 class BaseResource implements ResourceScreen
@@ -147,6 +149,9 @@ class BaseResource implements ResourceScreen
         return $this->repository;
     }
 
+    /**
+     * @return BaseTreeModel|Model|Builder
+     */
     public function model(): BaseTreeModel
     {
         return $this->repository->model();
