@@ -18,7 +18,7 @@ trait AuthorizationConstraints
 
         /** @var TestResponse $response */
         $response = $this->getJson($uri, $this->jwtAuthHeader($auth));
-        $response->assertStatus(JsonResponse::HTTP_FORBIDDEN)->assertJsonStructure(['status', 'message']);
+        $response->assertStatus(JsonResponse::HTTP_FORBIDDEN)->assertJsonStructure(['message']);
     }
 
     /** @test */
@@ -30,7 +30,7 @@ trait AuthorizationConstraints
 
         /** @var TestResponse $response */
         $response = $this->postJson($uri, [], $this->jwtAuthHeader($auth));
-        $response->assertStatus(JsonResponse::HTTP_FORBIDDEN)->assertJsonStructure(['status', 'message']);
+        $response->assertStatus(JsonResponse::HTTP_FORBIDDEN)->assertJsonStructure(['message']);
     }
 
     /** @test */
@@ -42,6 +42,6 @@ trait AuthorizationConstraints
 
         /** @var TestResponse $response */
         $response = $this->jsonDestroy($uri, [], $this->jwtAuthHeader($auth));
-        $response->assertStatus(JsonResponse::HTTP_FORBIDDEN)->assertJsonStructure(['status', 'message']);
+        $response->assertStatus(JsonResponse::HTTP_FORBIDDEN)->assertJsonStructure(['message']);
     }
 }
