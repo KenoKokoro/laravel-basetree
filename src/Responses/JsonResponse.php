@@ -6,6 +6,7 @@ namespace BaseTree\Responses;
 
 use BaseTree\Modules\Log\ClientLogger;
 use Illuminate\Http\JsonResponse as LaravelJsonResponse;
+use Illuminate\Support\Facades\App;
 
 class JsonResponse extends LaravelJsonResponse
 {
@@ -105,7 +106,7 @@ class JsonResponse extends LaravelJsonResponse
 
         if (config('base-tree.log')) {
             /** @var ClientLogger $logger */
-            $logger = app(ClientLogger::class);
+            $logger = App::make('BaseTree\Modules\Log\ClientLogger');
             $logger->writeIncoming($response, request());
         }
 

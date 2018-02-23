@@ -13,8 +13,8 @@ use BaseTree\Resources\Contracts\Callbacks\UpdatedCallback;
 use BaseTree\Resources\Contracts\ResourceScreen;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Http\Request;
 
 class BaseResource implements ResourceScreen
@@ -38,12 +38,29 @@ class BaseResource implements ResourceScreen
 
     /**
      * Used to dynamically exclude non-updateable fields
+     * Called on update
      * @var array
      */
     protected $excludedOnUpdate = [];
 
+    /**
+     * Ignore this keys if they do not have value.
+     * For instance if you send empty value from client, but you already have some default value for it
+     * Called on update
+     * @var array
+     */
+    protected $excludeOnUpdateIfEmpty = [];
+
+    /**
+     * Determine if the response should be paginated
+     * @var bool
+     */
     protected $shouldPaginate;
 
+    /**
+     * Determine if the response should be with data table structure
+     * @var bool
+     */
     protected $datatableResponse;
 
     /**
@@ -104,6 +121,12 @@ class BaseResource implements ResourceScreen
 
     public function updateEntity(BaseTreeModel $model, array $attributes)
     {
+        foreach ($attributes as $key => $value) {
+            if ((is_null($value) or $value === '') and in_array($key, $this->excludeOnUpdateIfEmpty)) {
+                unset($attributes[$key]);
+            }
+        }
+
         if ( ! empty($this->fillable)) {
             $attributes = array_except($attributes, $this->excludedOnUpdate);
             $updated = $this->repository->update($model, array_only($attributes, $this->fillable));

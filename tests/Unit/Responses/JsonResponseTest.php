@@ -4,8 +4,12 @@
 namespace BaseTree\Tests\Unit\Responses;
 
 
+use BaseTree\Modules\Log\ClientLogger;
 use BaseTree\Responses\JsonResponse;
+use BaseTree\Tests\Fake\ClientLoggerStub;
 use Illuminate\Http\JsonResponse as LaravelJsonResponse;
+use Illuminate\Support\Facades\App;
+use Mockery as m;
 use Tests\TestCase;
 
 class JsonResponseTest extends TestCase
@@ -184,6 +188,17 @@ class JsonResponseTest extends TestCase
     public function json_response_facade_is_registered()
     {
         $this->assertInstanceOf(JsonResponse::class, app('basetree.response.json'));
+    }
+
+    /** @test */
+    public function response_should_try_to_call_the_logger_if_config_enables_it()
+    {
+        config()->set('base-tree.log', true);
+        $loggerStub = m::mock(new ClientLoggerStub);
+        App::shouldReceive('make')->with('BaseTree\Modules\Log\ClientLogger')->andReturn($loggerStub);
+        $loggerStub->shouldReceive('writeIncoming');
+
+        $this->instance->success();
     }
 
     /** @test */

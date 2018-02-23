@@ -211,6 +211,46 @@ class BaseResourceTest extends TestCase
     }
 
     /** @test */
+    public function update_entity_should_ignore_empty_values_if_provided()
+    {
+        $fillable = ['attr1', 'attr4', 'attr5', 'attr6', 'attr7'];
+        $instance = $this->resourceInstance(null, DummyResource::class, $fillable);
+        $attributes = ['attr1' => 'value1', 'attr4' => '', 'attr5' => null, 'attr6' => 0, 'attr7' => []];
+
+        $this->model->shouldReceive('update')->with(['attr1' => 'value1', 'attr6' => 0, 'attr7' => []])
+                    ->andReturnSelf();
+        $this->model->shouldReceive('fresh')->once()->andReturnSelf();
+        $this->model->shouldReceive('getKey')->andReturn(1);
+        $this->model->shouldReceive('find')->with(1)->andReturnSelf();
+        $this->model->shouldReceive('load')->with(['Relation1'])->andReturnSelf();
+
+        $response = $instance->updateEntity($this->model, $attributes);
+        $this->assertInstanceOf(DummyModel::class, $response);
+    }
+
+    /** @test */
+    public function update_entity_should_not_ignore_empty_values_if_provided_with_value()
+    {
+        $fillable = ['attr1', 'attr4', 'attr5', 'attr6', 'attr7'];
+        $instance = $this->resourceInstance(null, DummyResource::class, $fillable);
+        $attributes = ['attr1' => 'value1', 'attr4' => 'value4', 'attr5' => 5, 'attr6' => ['full']];
+
+        $this->model->shouldReceive('update')->with([
+            'attr1' => 'value1',
+            'attr4' => 'value4',
+            'attr5' => 5,
+            'attr6' => ['full']
+        ])->andReturnSelf();
+        $this->model->shouldReceive('fresh')->once()->andReturnSelf();
+        $this->model->shouldReceive('getKey')->andReturn(1);
+        $this->model->shouldReceive('find')->with(1)->andReturnSelf();
+        $this->model->shouldReceive('load')->with(['Relation1'])->andReturnSelf();
+
+        $response = $instance->updateEntity($this->model, $attributes);
+        $this->assertInstanceOf(DummyModel::class, $response);
+    }
+
+    /** @test */
     public function destroy_should_delete_the_entity_from_database()
     {
         $instance = $this->resourceInstance();
@@ -259,21 +299,28 @@ class BaseResourceTest extends TestCase
     public function resource_can_have_validation_rules()
     {
         /** @var DummyResourceWithValidationsRules $instance */
-        $instance = $this->resourceInstance(null,DummyResourceWithValidationsRules::class);
+        $instance = $this->resourceInstance(null, DummyResourceWithValidationsRules::class);
         $this->assertTrue(is_array($instance->storeRules()));
         $this->assertTrue(is_array($instance->updateRules(1)));
         $this->assertTrue(is_array($instance->destroyRules(1)));
     }
 
-    private function resourceInstance(Request $request = null, $resource = DummyResource::class): BaseResource
-    {
+    private function resourceInstance(
+        Request $request = null,
+        $resource = DummyResource::class,
+        array $fillable = null
+    ): BaseResource {
         if (is_null($request)) {
             $request = request();
         }
 
+        if (is_null($fillable)) {
+            $fillable = ['attr1', 'attr2'];
+        }
+
         $this->model = Mockery::mock(DummyModel::class);
         $this->queryMock = Mockery::mock(Builder::class);
-        $this->model->shouldReceive('getFillable')->andReturn(['attr1', 'attr2']);
+        $this->model->shouldReceive('getFillable')->andReturn($fillable);
         $this->model->shouldReceive('newQuery')->andReturn($this->queryMock);
 
         $instance = new $resource(new EloquentDummy($this->model));
