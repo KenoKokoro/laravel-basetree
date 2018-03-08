@@ -109,7 +109,7 @@ class BaseResource implements ResourceScreen
 
     public function store(array $attributes)
     {
-        $model = $this->repository->create($attributes);
+        $model = $this->repository->create(array_only($attributes, $this->fillable));
 
         if ($this instanceof CreatedCallback) {
             $this->created($model, array_except($attributes, $this->fillable), $attributes);
