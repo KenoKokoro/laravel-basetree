@@ -11,6 +11,7 @@ use BaseTree\Resources\Contracts\Validations\DestroyValidation;
 use BaseTree\Resources\Contracts\Validations\StoreValidation;
 use BaseTree\Resources\Contracts\Validations\UpdateValidation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use URL;
 
 class WebController extends BaseController
