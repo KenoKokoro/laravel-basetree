@@ -1,4 +1,5 @@
 #!/bin/bash
+touch /usr/share/nginx/logs/error.log
 cp /etc/nginx/sites/application.conf /etc/nginx/sites-available/default.conf
 cp /usr/local/etc/php/conf/php-fpm.conf /usr/local/etc/php-fpm.conf
 cp /usr/local/etc/php/conf/www.conf  /usr/local/etc/php-fpm.d/www.conf
@@ -44,14 +45,16 @@ if [ ! -z "$PUID" ]; then
     PGID=${PUID}
   fi
   deluser nginx
-  addgroup -g ${PGID} nginx
-  adduser -D -S -h /var/cache/nginx -s /sbin/nologin -G nginx -u ${PUID} nginx
+  delgroup nginx
+  addgroup --system --gid ${PGID} nginx
+  adduser --system --ingroup nginx --disabled-password --home /var/cache/nginx --disabled-login --uid ${PUID} nginx
   chown -Rf nginx:nginx ${ROOT}
  else
   # Always chown webroot for better mounting
   chown -Rf nginx:nginx ${ROOT}
 fi
 
+ln -s /etc/nginx/sites-available/default.conf /etc/nginx/sites-enabled/default
 mkdir /etc/nginx/logs
 touch /etc/nginx/logs/error.log
 
