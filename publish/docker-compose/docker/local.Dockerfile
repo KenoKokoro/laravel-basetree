@@ -23,10 +23,11 @@ RUN unlink /etc/nginx/sites-enabled/default \
 
 # Required packages ( supervisor and composer )
 RUN apt-get install -y wget supervisor curl ca-certificates dialog git \
-    musl-dev libpng-dev libffi-dev vim libsqlite3-dev libicu-dev libxml2-dev
+    musl-dev libpng-dev libffi-dev vim libsqlite3-dev libicu-dev libxml2-dev libjpeg-dev libfreetype6-dev
 
 ### PHP
-RUN docker-php-ext-install pdo_mysql pdo_sqlite mysqli gd exif intl json soap dom zip opcache bcmath \
+RUN docker-php-ext-configure gd --with-gd --with-freetype-dir=/usr/include/ --with-png-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+    && docker-php-ext-install pdo_mysql pdo_sqlite mysqli gd exif intl json soap dom zip opcache bcmath \
     && docker-php-source delete \
     && mkdir -p /run/nginx \
     && mkdir -p /var/log/supervisor
