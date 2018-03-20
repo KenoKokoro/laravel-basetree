@@ -23,7 +23,7 @@ RUN unlink /etc/nginx/sites-enabled/default \
     && touch /usr/share/nginx/logs/error.log
 
 # Required packages ( supervisor and composer )
-RUN apt-get install -y wget supervisor curl ca-certificates dialog \
+RUN apt-get install -y wget supervisor curl ca-certificates dialog git \
     musl-dev libpng-dev libffi-dev vim libsqlite3-dev libicu-dev libxml2-dev
 
 ### PHP
