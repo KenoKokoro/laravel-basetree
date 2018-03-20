@@ -4,7 +4,6 @@ MAINTAINER Jimmy <stefan.brankovik@cosmicdevelopment.com>
 
 ### NGINX
 ARG NGINX_VERSION=1.10.3-1+deb9u1
-ARG FFMPEG_VERSION=7:3.2.10-1~deb9u1
 ARG YARN_VERSION=1.5.1-1
 
 RUN apt-get update && apt-get install -y --no-install-recommends apt-utils gnupg2 apt-transport-https
@@ -40,9 +39,6 @@ RUN EXPECTED_COMPOSER_SIGNATURE=$(wget -q -O - https://composer.github.io/instal
 ### NODEJS + YARN
 RUN apt-get install -y yarn=${YARN_VERSION}
 RUN apt-get install -y nodejs
-
-## FFMPEG
-RUN apt-get install -y ffmpeg=${FFMPEG_VERSION}
 
 ### CLEANUP
 RUN rm -rf /var/cache/* \
