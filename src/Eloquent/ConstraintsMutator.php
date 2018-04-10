@@ -46,7 +46,7 @@ class ConstraintsMutator
     protected function raw($column, $operator, $value): Expression
     {
         # TODO: Inspect raw for security
-        if ($this->isColumn($value)) {
+        if ( ! is_array($value) and $this->isColumn($value)) {
             return DB::raw("`{$column}` {$operator} {$value}");
         }
 
