@@ -56,12 +56,32 @@ class ConstraintsMutator
     protected function explode(string $constraint): array
     {
         $arguments = explode('|', $constraint);
+        $mapped = $this->mapArguments($arguments);
 
+        if ($this->shouldBeArray($value = $mapped[2]) and (strtolower($operator = $mapped[1]) == 'in')) {
+            $mapped[2] = $this->extractArrayFrom($value);
+        }
+
+        return $mapped;
+    }
+
+    protected function mapArguments(array $arguments): array
+    {
         if (count($arguments) === 2) {
             return [$column = $arguments[0], '=', $value = $arguments[1]];
         }
 
         return [$column = $arguments[0], $operation = $arguments[1], $value = $arguments[2]];
+    }
+
+    protected function shouldBeArray(string $value): bool
+    {
+        return ! ! preg_match("/^\[.*\]$/", $value);
+    }
+
+    protected function extractArrayFrom(string $value): array
+    {
+        return explode(',', substr($value, 1, -1));
     }
 
     protected function isColumn(string $value): bool

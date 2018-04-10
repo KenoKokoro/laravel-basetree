@@ -46,6 +46,17 @@ class ConstraintsMutatorTest extends TestCase
     }
 
     /** @test */
+    public function constraints_can_contain_array_as_value()
+    {
+        $instance = new ConstraintsMutatorTestWrapper([]);
+        [$column, $operation, $value] = $instance->testExplode('column|in|[value1,value2,value3]');
+
+        $this->assertEquals('column', $column);
+        $this->assertEquals('in', $operation);
+        $this->assertEquals(['value1', 'value2', 'value3'], $value);
+    }
+
+    /** @test */
     public function raw_should_return_database_expression()
     {
         $instance = new ConstraintsMutatorTestWrapper([]);
