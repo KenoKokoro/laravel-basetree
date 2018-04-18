@@ -121,6 +121,8 @@ class BaseResource implements ResourceScreen
 
     public function updateEntity(BaseTreeModel $model, array $attributes)
     {
+        $old = $this->repository()->find($model->id);
+
         foreach ($attributes as $key => $value) {
             if ((is_null($value) or $value === '') and in_array($key, $this->excludeOnUpdateIfEmpty)) {
                 unset($attributes[$key]);
@@ -134,7 +136,7 @@ class BaseResource implements ResourceScreen
 
         if ($this instanceof UpdatedCallback) {
             $dependencies = array_except($attributes, $this->fillable) ?? [];
-            $this->updated($model, $updated ?? null, $dependencies, $attributes);
+            $this->updated($old, $updated ?? null, $dependencies, $attributes);
         }
 
         /** @var EloquentModel $model */
