@@ -75,22 +75,33 @@ class JsonResponse extends LaravelJsonResponse
         return $this->parentInstance($response, parent::HTTP_UNPROCESSABLE_ENTITY);
     }
 
-    public function notFound(string $message = ''): parent
+    public function notFound(string $message = '', array $append = []): parent
     {
         if (empty($message)) {
             $message = 'Not found.';
         }
+        $response = $this->getResponse($message);
 
-        return $this->parentInstance($this->getResponse($message), parent::HTTP_NOT_FOUND);
+        if ( ! empty($append)) {
+            $response = array_merge($response, $append);
+        }
+
+        return $this->parentInstance($response, parent::HTTP_NOT_FOUND);
     }
 
-    public function internalError(string $message = ''): parent
+    public function internalError(string $message = '', array $append = []): parent
     {
         if (empty($message)) {
             $message = 'Internal error.';
         }
 
-        return $this->parentInstance($this->getResponse($message), parent::HTTP_INTERNAL_SERVER_ERROR);
+        $response = $this->getResponse($message);
+
+        if ( ! empty($append)) {
+            $response = array_merge($response, $append);
+        }
+
+        return $this->parentInstance($response, parent::HTTP_INTERNAL_SERVER_ERROR);
     }
 
     private function getResponse(string $message): array

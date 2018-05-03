@@ -4,7 +4,6 @@
 namespace BaseTree\Tests\Unit\Responses;
 
 
-use BaseTree\Modules\Log\ClientLogger;
 use BaseTree\Responses\JsonResponse;
 use BaseTree\Tests\Fake\ClientLoggerStub;
 use Illuminate\Http\JsonResponse as LaravelJsonResponse;
@@ -167,6 +166,15 @@ class JsonResponseTest extends TestCase
     }
 
     /** @test */
+    public function not_found_entity_append_new_key_to_response()
+    {
+        $response = $this->instance->notFound('', ['key' => 'value'])->getData();
+        $this->assertCount(2, (array)$response);
+        $this->assertNotEmpty($response->key);
+        $this->assertEquals($response->key, 'value');
+    }
+
+    /** @test */
     public function internal_error_default_response()
     {
         $internalError = $this->instance->internalError();
@@ -182,6 +190,15 @@ class JsonResponseTest extends TestCase
     {
         $response = $this->instance->internalError('OK')->getData();
         $this->assertEquals($response->message, 'OK');
+    }
+
+    /** @test */
+    public function internal_error_entity_append_new_key_to_response()
+    {
+        $response = $this->instance->internalError('', ['key' => 'value'])->getData();
+        $this->assertCount(2, (array)$response);
+        $this->assertNotEmpty($response->key);
+        $this->assertEquals($response->key, 'value');
     }
 
     /** @test */

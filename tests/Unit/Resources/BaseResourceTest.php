@@ -322,6 +322,7 @@ class BaseResourceTest extends TestCase
         $this->queryMock = Mockery::mock(Builder::class);
         $this->model->shouldReceive('getFillable')->andReturn($fillable);
         $this->model->shouldReceive('newQuery')->andReturn($this->queryMock);
+        $this->model->id = 1;
 
         $instance = new $resource(new EloquentDummy($this->model));
         $instance->setRequestOperations($request);

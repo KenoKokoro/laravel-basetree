@@ -49,6 +49,8 @@ class WebController extends BaseController
 
     public function create(Request $request)
     {
+        $this->checkAccess('manage', $this->resource->authorizationKey(), $this->resource->model());
+
         return view("{$this->viewPath}.create");
     }
 
@@ -103,6 +105,6 @@ class WebController extends BaseController
         $this->resource->destroy($entity, $request->all());
         DB::commit();
 
-        return $this->response()->success($this->redirectTo, 'Successfully updated.');
+        return $this->response()->success($this->redirectTo, 'Successfully deleted.');
     }
 }
