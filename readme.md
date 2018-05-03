@@ -12,23 +12,28 @@ After the package is pulled in, register the Service Provider in your `AppServic
 That should be it.
 
 ## Description
-Basic multilayer structure which is basically meant for RESTful APIs. Includes base classes which by their 
-extending should allow working RESTful API endpoint for single resource. It forces the code to be separated
-in business logic layer and data access layer, which results in much cleaner code.
+Basic multilayer structure which is basically meant for RESTful APIs and Web CRUD resources. Includes base classes which
+ by their extending should allow working RESTful API endpoint and CRUD operations for single resource. It forces the code to be 
+separated in business logic layer and data access layer, which results in much cleaner code.
 
 ## Includes
 1. Error handling just by extension of the `BaseTree\Exception\Handler.php`
-2. Base controller with required methods `BaseTree\Controller\RestfulJsonController.php`
+2. Base controllers with required methods 
+
+    a.`BaseTree\Controller\RestfulJsonController.php` for RESTful APIs
+    
+    b.`BaseTree\Controller\WebController.php` for web based CRUD operations
+    
 3. Base resource which is basically a class dedicated for the business logic 
 on given Model `BaseTree\Resources\BaseResource.php`
 4. Generic separated classes for http or json response.
-5. Basic Model which is used in every resource and data access layer `BaseTree\Models\Model.php`.
-Created models should extend this model.
-6. Data access layer which wraps the models in separate repository for better structure and reusability
-of the already used database calls. Every repository have interface and implementation.
+5. Basic model interface which is used in every resource and data access layer `BaseTree\Models\BaseTreeModel.php`.
+Created models should implement this model.
+6. Data access layer which wraps the models in separate repository for better structure and re-usability
+of the already used database calls. Every repository have own interface and implementation.
 7. Each database update is wrapped inside transaction, so if you don't receive your controllers response,
 and got an exception nothing will be persisted in the database. 
-8. `DatabaseTestCase` which contains a lot of helpers for database testing.
+8. `DatabaseTestCase` which contains a lot of helpers for integration testing using the PHPUnit framework.
 
 ## Usage
 ### Requirements
@@ -40,9 +45,9 @@ and got an exception nothing will be persisted in the database.
         namespace App\Models;
         
         use Illuminate\Database\Eloquent\Model;
-        use BaseTree\Models\BaseTreeModelModel;
+        use BaseTree\Models\BaseTreeModel;
         
-        class Foo extends Model implements Model 
+        class Foo extends Model implements BaseTreeModel 
         {
             protected $fillable = ['name', 'description'];
         }
@@ -65,7 +70,7 @@ and got an exception nothing will be persisted in the database.
         }
     ```
 
-    Now the implementation that is implementing the newly created interface.
+    Now the repository implementation that is implementing the newly created interface.
 
     In `app/DAL/Foo` create `EloquentFoo.php`
     ```php
@@ -97,7 +102,7 @@ and got an exception nothing will be persisted in the database.
             public function register() {
                 $bindings = [
                     FooRepository::class => EloquentFoo::class,
-                    # Every other repository must be registered here
+                    # Every other repository should be registered here
                 ];
                 
                 foreach($bindings as $interface => $implementation) {
@@ -124,11 +129,11 @@ and got an exception nothing will be persisted in the database.
 data access layer. Create a folder inside your `app` folder called `Resources` or `BLL`, and in there
 you can keep you model resources. ([Automatic creation](#artisan-generators))
 
-    In `app/Resources` create the file `FooResource.php`:
+    In `app/BLL` create the file `FooResource.php`:
     ```php
-        namespace App\Resources;
+        namespace App\BLL;
         
-        use BaseTree\Resources\BaseResource
+        use BaseTree\BLL\BaseResource
         use App\DAL\FooRepository;
         
         class FooResource extends BaseResource
@@ -146,22 +151,26 @@ you can keep you model resources. ([Automatic creation](#artisan-generators))
     `storeRules()`, `updateRules()` and `destroyRules()`. Having this interface implemented on your resource,
     your requests on `store()`, `update()` and `destroy()` would be validated. If you don't need any validation
     for certain method, just return empty array.
+    You can also use them as separate depending on your needs (Check the `BaseTree\Resources\Contracts\ResourceValidation`,
+    all the extended interfaces have their own method and can be used individually if needed)
 
     The `BaseTree\Resources\Contracts\ResourceCallbacks` interface contains the `created()` and `updated()`
     methods which are basically hooks after resource is created or updated. Passed `$dependencyAttributes` values
     contains everything except the `$fillable` attributes that are set on your model. This is good since 
-    using this values you can easaly update your relations. 
+    using this values you can easily update your relations. The callbacks also can be used individually if needed just like 
+    the resource validations that are mentioned above (`BaseTree\Resources\Contracts\ResourceCallbacks` check the extending interfaces)
 
     The `$attributes` contains the `$fillable` attributes.
 
-4. Now the controller. Each controller should extend the `BaseTree\Controllers\RestfulJsonController`. ([Automatic creation](#artisan-generators))
+4. Now the controller. Each controller should extend the `BaseTree\Controllers\RestfulJsonController` or 
+`BaseTree\Controllers\WebController` depending on your need. ([Automatic creation](#artisan-generators))
 
     In `app/Http/Controllers` (or inside somewhere else) create your `FoosController.php`.
     ```php
         namespace App\Http\Controllers;
         
         use BaseTree\Controllers\RestfulJsonController;
-        use App\Resources\FooResource;
+        use App\BLL\FooResource;
         
         class FoosController extends RestfulJsonController 
         {
@@ -186,7 +195,7 @@ for jquery datatables plugin.
 2. Visiting `/api/foos&paginate=1&perPage=10` will return you paginated response with next and previous
 urls in the response. Default value for `perPage` is 15.
 3. Visiting `api/foos&constraints[0]=name|=|bar` will return all foos with name bar. You can build 
-query strings using the php function `http_build_query(['constraints' => ['name|=|bar']])`. 
+query strings using the php function `http_build_query(['constraints' => ['name|=|bar', 'active|1']])`. 
 4. Visiting `api/foos&fields[0]=Bar` will return all foos but with the `Bar` relation included in the
 response.
 
@@ -289,9 +298,9 @@ After you create your `FoosController` which extends the `DatabaseTestCase` you 
 
 ### Feeling limited with just empty files
 If you need additional functionality you can always override the parent methods. For example, if you want
-to generate slug for you resource which only has name as value, in your `app\Resources\FooResource.php`
+to generate slug for you resource which only has name as value, in your `app\BLL\FooResource.php`
 ```php
-    namespace App\Resources;
+    namespace App\BLL;
     
     use BaseTree\Resources\BaseResource;
     use App\DAL\FooRepository;
@@ -344,6 +353,10 @@ Same thing works for controllers and DAL. Whatever you need to be customized can
     Example: `php artisan basetree:bll --model=App\\Models\\User --dal-interface=App\\DAL\\User\\UserRepository`
     
 3. Generate controller. The generated controller will have the given business logic layer injected inside the constructor
+
+NOTE: At this point, the generator is only creating controller extending the `RestfulJsonController`. You will have to change
+the extension manually on the generated controller in order to extend the `WebController` or create it manually
+
     ```php
     Usage:
       php artisan basetree:controller [options]
@@ -403,9 +416,9 @@ for the required variables to make the docker containers just work.
     ```
 
 ## TODO:
-1. ~~Tests for everything~~ [Tests repository](https://github.com/KenoKokoro/laravel-basetree-unit-tests)
+1. ~~Tests for everything~~
 2. ~~Artisan generator~~
-3. Wiki examples
+3. Wiki examples and explanations
 4. Include JWT support
 5. Add artisan endpoint generator
 
