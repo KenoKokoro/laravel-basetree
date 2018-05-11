@@ -42,7 +42,7 @@ class WebController extends BaseController
     public function show(Request $request, $id)
     {
         $entity = $this->resource->show($id, $request->get('fields') ?? []);
-        $this->checkAccess('manage', $this->resource->authorizationKey(), $entity);
+        $this->checkAccess('show', $this->resource->authorizationKey(), $entity);
 
         return view("{$this->viewPath}.show", compact('entity'));
     }
