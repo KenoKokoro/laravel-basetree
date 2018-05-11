@@ -354,20 +354,20 @@ Same thing works for controllers and DAL. Whatever you need to be customized can
     
 3. Generate controller. The generated controller will have the given business logic layer injected inside the constructor
 
-NOTE: At this point, the generator is only creating controller extending the `RestfulJsonController`. You will have to change
-the extension manually on the generated controller in order to extend the `WebController` or create it manually
+    NOTE: At this point, the generator is only creating controller extending the `RestfulJsonController`. You will have to change
+    the extension manually on the generated controller in order to extend the `WebController` or create it manually
 
     ```php
     Usage:
       php artisan basetree:controller [options]
-    
+
     Options:
           --model-plural[=MODEL-PLURAL]  Plural form of the model name. For instance if the model is User, you should send here Users
           --bll[=BLL]                    Fully qualified business logic layer name including namespace
           --folder[=FOLDER]              Folder where to create the controller [default: "app/Http/Controllers/Api/"]
           --namespace[=NAMESPACE]        Namespace to create the controller under [default: "App\Http\Controllers\Api"]
-
     ```
+    
     Example: `php artisan basetree:controller --model-plural=users -bll=App\\BLL\UserResource`
 
 4. Publish the docker-compose architecture. Check out the .env.docker-compose.example
@@ -420,7 +420,7 @@ for the required variables to make the docker containers just work.
 2. ~~Artisan generator~~
 3. Wiki examples and explanations
 4. Include JWT support
-5. Add artisan endpoint generator
+5. Add artisan single endpoint generator to wrap all generators at once
 
 ## License
 The BaseTree package is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT)
