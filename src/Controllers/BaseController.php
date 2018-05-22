@@ -15,9 +15,13 @@ class BaseController extends Controller
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    protected $response;
-
     protected $permission;
+
+    /**
+     * Used to exclude methods from being authorized on the restful resource
+     * @var array
+     */
+    protected $excludedAuthorization = [];
 
     /**
      * @return JsonResponse|HttpResponse
@@ -31,9 +35,17 @@ class BaseController extends Controller
         return new HttpResponse;
     }
 
+    /**
+     * @param string $ability
+     * @param string $key
+     * @param null   $model
+     * @return void
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
     protected function checkAccess(string $ability, string $key, $model = null): void
     {
-        if (config('base-tree.authorization')) {
+        $method = request()->route()->getActionMethod();
+        if (config('base-tree.authorization') and ! in_array($method, $this->excludedAuthorization)) {
             $this->authorize($ability, [$key, $this->permission, $model]);
         }
     }

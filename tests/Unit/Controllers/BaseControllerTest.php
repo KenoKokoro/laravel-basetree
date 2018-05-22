@@ -4,9 +4,11 @@
 namespace BaseTree\Tests\Unit\Controllers;
 
 
+use BaseTree\Controllers\BaseController;
 use BaseTree\Responses\HttpResponse;
 use BaseTree\Responses\JsonResponse;
 use BaseTree\Tests\Fake\DummyModel;
+use Illuminate\Routing\Route;
 use BaseTree\Tests\Fake\Wrappers\BaseControllerTestWrapper;
 use Tests\TestCase;
 
@@ -48,6 +50,21 @@ class BaseControllerTest extends TestCase
     public function check_access_should_be_called_if_the_environment_variable_is_set()
     {
         config()->set('base-tree.authorization', true);
+        request()->setRouteResolver(function () {
+            return new Route([], '', ['uses' => BaseController::class . "@index"]);
+        });
         $this->controller->testCheckAccess('view', DummyModel::class, new DummyModel);
+    }
+
+    /** @test */
+    public function check_access_should_not_be_called_if_the_action_method_is_excluded_for_that_controller()
+    {
+        config()->set('base-tree.authorization', true);
+        request()->setRouteResolver(function () {
+            return new Route([], '', ['controller' => BaseController::class . "@index"]);
+        });
+        $this->controller->setExcluded(['index']);
+        $this->controller->testCheckAccess('view', DummyModel::class, new DummyModel);
+        $this->assertTrue(true);
     }
 }

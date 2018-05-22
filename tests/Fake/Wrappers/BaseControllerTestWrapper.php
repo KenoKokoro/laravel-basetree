@@ -17,4 +17,9 @@ class BaseControllerTestWrapper extends BaseController
     {
         return parent::checkAccess($ability, $key, $model);
     }
+
+    public function setExcluded(array $exclude)
+    {
+        $this->excludedAuthorization = $exclude;
+    }
 }

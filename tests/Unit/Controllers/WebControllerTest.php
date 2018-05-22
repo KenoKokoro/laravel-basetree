@@ -4,12 +4,13 @@
 namespace BaseTree\Tests\Unit\Controllers;
 
 
-use BaseTree\Responses\Facades\HttpResponse;
+use BaseTree\Controllers\WebController;
 use BaseTree\Tests\Fake\DummyModel;
 use BaseTree\Tests\Fake\DummyResource;
 use BaseTree\Tests\Fake\DummyResourceWithValidationsRules;
 use BaseTree\Tests\Fake\DummyWebController;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Route as LaravelRoute;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
 use Mockery;
@@ -23,7 +24,7 @@ class WebControllerTest extends TestCase
     /** @test */
     public function web_index_should_return_view_with_all_entries()
     {
-        $instance = $this->controller();
+        $instance = $this->controller('index');
         $data = collect(['value1', 'value2', 'value3']);
 
         $this->resourceMock->shouldReceive('authorizationKey')->andReturn('Model');
@@ -37,7 +38,7 @@ class WebControllerTest extends TestCase
     /** @test */
     public function web_show_should_return_view_with_single_entity()
     {
-        $instance = $this->controller();
+        $instance = $this->controller('show');
         $data = ['name' => 'Test Name'];
 
         $this->resourceMock->shouldReceive('show')->with(1, [])->andReturn($data);
@@ -51,7 +52,7 @@ class WebControllerTest extends TestCase
     public function web_show_should_return_found_instance_with_fields_if_defined_on_request()
     {
         request()->query->set('fields', ['Field1', 'Field2']);
-        $instance = $this->controller();
+        $instance = $this->controller('show');
         $data = ['name' => 'Test Name'];
 
         $this->resourceMock->shouldReceive('show')->with(1, ['Field1', 'Field2'])->andReturn($data);
@@ -64,7 +65,7 @@ class WebControllerTest extends TestCase
     /** @test */
     public function create_should_show_the_view_without_any_data()
     {
-        $instance = $this->controller();
+        $instance = $this->controller('create');
 
         $this->resourceMock->shouldReceive('authorizationKey')->andReturn('Model');
         $this->resourceMock->shouldReceive('model')->andReturn(new DummyModel);
@@ -78,7 +79,7 @@ class WebControllerTest extends TestCase
     {
         request()->setMethod('POST');
         request()->request->set('name', 'Dummy');
-        $instance = $this->controller();
+        $instance = $this->controller('store');
 
         $this->resourceMock->shouldReceive('authorizationKey')->andReturn('Model');
         $this->resourceMock->shouldReceive('model')->andReturn(new DummyModel);
@@ -99,7 +100,7 @@ class WebControllerTest extends TestCase
     {
         request()->setMethod('POST');
         request()->request->set('name', 'Dummy');
-        $instance = $this->controller(DummyResourceWithValidationsRules::class);
+        $instance = $this->controller('store', DummyResourceWithValidationsRules::class);
 
         $this->resourceMock->shouldReceive('authorizationKey')->andReturn('Model');
         $this->resourceMock->shouldReceive('model')->andReturn(new DummyModel);
@@ -113,7 +114,7 @@ class WebControllerTest extends TestCase
     {
         request()->setMethod('POST');
         request()->request->set('name', 'Dummy');
-        $instance = $this->controller(DummyResourceWithValidationsRules::class);
+        $instance = $this->controller('store', DummyResourceWithValidationsRules::class);
 
         $this->resourceMock->shouldReceive('authorizationKey')->andReturn('Model');
         $this->resourceMock->shouldReceive('model')->andReturn(new DummyModel);
@@ -130,7 +131,7 @@ class WebControllerTest extends TestCase
     /** @test */
     public function web_edit_should_return_view_with_single_entity()
     {
-        $instance = $this->controller();
+        $instance = $this->controller('edit');
         $data = ['name' => 'Test Name'];
 
         $this->resourceMock->shouldReceive('show')->with(1, [])->andReturn($data);
@@ -144,7 +145,7 @@ class WebControllerTest extends TestCase
     public function web_edit_should_return_found_instance_with_fields_if_defined_on_request()
     {
         request()->query->set('fields', ['Field1', 'Field2']);
-        $instance = $this->controller();
+        $instance = $this->controller('edit');
         $data = ['name' => 'Test Name'];
 
         $this->resourceMock->shouldReceive('show')->with(1, ['Field1', 'Field2'])->andReturn($data);
@@ -159,7 +160,7 @@ class WebControllerTest extends TestCase
     {
         request()->setMethod('POST');
         request()->request->set('name', 'Dummy');
-        $instance = $this->controller();
+        $instance = $this->controller('update');
         $entityStub = Mockery::mock(DummyModel::class);
 
         $this->resourceMock->shouldReceive('authorizationKey')->andReturn('Model');
@@ -182,7 +183,7 @@ class WebControllerTest extends TestCase
     {
         request()->setMethod('POST');
         request()->request->set('name', 'Dummy');
-        $instance = $this->controller(DummyResourceWithValidationsRules::class);
+        $instance = $this->controller('update', DummyResourceWithValidationsRules::class);
         $entityStub = Mockery::mock(DummyModel::class);
 
         $this->resourceMock->shouldReceive('authorizationKey')->andReturn('Model');
@@ -196,7 +197,7 @@ class WebControllerTest extends TestCase
     {
         request()->setMethod('POST');
         request()->request->set('name', 'Dummy');
-        $instance = $this->controller(DummyResourceWithValidationsRules::class);
+        $instance = $this->controller('update', DummyResourceWithValidationsRules::class);
         $entityStub = Mockery::mock(DummyModel::class);
 
         $this->resourceMock->shouldReceive('authorizationKey')->andReturn('Model');
@@ -217,7 +218,7 @@ class WebControllerTest extends TestCase
     {
         request()->setMethod('DELETE');
         request()->request->set('name', 'Dummy');
-        $instance = $this->controller();
+        $instance = $this->controller('destroy');
         $entityStub = Mockery::mock(DummyModel::class);
 
         $this->resourceMock->shouldReceive('authorizationKey')->andReturn('Model');
@@ -240,7 +241,7 @@ class WebControllerTest extends TestCase
     {
         request()->setMethod('DELETE');
         request()->request->set('name', 'Dummy');
-        $instance = $this->controller(DummyResourceWithValidationsRules::class);
+        $instance = $this->controller('destroy', DummyResourceWithValidationsRules::class);
         $entityStub = Mockery::mock(DummyModel::class);
 
         $this->resourceMock->shouldReceive('authorizationKey')->andReturn('Model');
@@ -254,7 +255,7 @@ class WebControllerTest extends TestCase
     {
         request()->setMethod('POST');
         request()->request->set('name', 'Dummy');
-        $instance = $this->controller(DummyResourceWithValidationsRules::class);
+        $instance = $this->controller('destroy', DummyResourceWithValidationsRules::class);
         $entityStub = Mockery::mock(DummyModel::class);
 
         $this->resourceMock->shouldReceive('authorizationKey')->andReturn('Model');
@@ -271,12 +272,16 @@ class WebControllerTest extends TestCase
     }
 
     protected function controller(
+        string $method,
         string $resource = DummyResource::class,
         Request $request = null
     ): DummyWebController {
 
         if (is_null($request)) {
             $request = request();
+            $request->setRouteResolver(function () use ($method) {
+                return new LaravelRoute([], '', ['controller' => WebController::class . "@{$method}"]);
+            });
         }
 
         $this->resourceMock = Mockery::mock($resource);

@@ -10,6 +10,7 @@ use BaseTree\Tests\Fake\DummyResource;
 use BaseTree\Tests\Fake\DummyResourceWithValidationsRules;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Route as LaravelRoute;
 use Illuminate\Support\Facades\DB;
 use Mockery;
 use Tests\TestCase;
@@ -28,7 +29,7 @@ class RestfulJsonControllerTest extends TestCase
     /** @test */
     public function index_should_return_all_info()
     {
-        $instance = $this->controller();
+        $instance = $this->controller('index');
         $data = collect(['value1', 'value2', 'value3']);
 
         $this->resourceMock->shouldReceive('authorizationKey')->andReturn('Model');
@@ -42,7 +43,7 @@ class RestfulJsonControllerTest extends TestCase
     /** @test */
     public function show_should_return_instance_without_fields_if_not_defined()
     {
-        $instance = $this->controller();
+        $instance = $this->controller('show');
         $data = ['name' => 'Test Name'];
 
         $this->resourceMock->shouldReceive('show')->with(1, [])->andReturn($data);
@@ -56,7 +57,7 @@ class RestfulJsonControllerTest extends TestCase
     public function show_should_return_found_instance_with_fields_if_defined_on_request()
     {
         request()->query->set('fields', ['Field1', 'Field2']);
-        $instance = $this->controller();
+        $instance = $this->controller('show');
         $data = ['name' => 'Test Name'];
 
         $this->resourceMock->shouldReceive('show')->with(1, ['Field1', 'Field2'])->andReturn($data);
@@ -71,7 +72,7 @@ class RestfulJsonControllerTest extends TestCase
     {
         request()->setMethod('POST');
         request()->request->set('name', 'Dummy');
-        $instance = $this->controller();
+        $instance = $this->controller('store');
 
         $this->resourceMock->shouldReceive('authorizationKey')->andReturn('Model');
         $this->resourceMock->shouldReceive('model')->andReturn(new DummyModel);
@@ -91,7 +92,7 @@ class RestfulJsonControllerTest extends TestCase
     {
         request()->setMethod('POST');
         request()->request->set('name', 'Dummy');
-        $instance = $this->controller(DummyResourceWithValidationsRules::class);
+        $instance = $this->controller('store', DummyResourceWithValidationsRules::class);
 
         $this->resourceMock->shouldReceive('authorizationKey')->andReturn('Model');
         $this->resourceMock->shouldReceive('model')->andReturn(new DummyModel);
@@ -104,7 +105,7 @@ class RestfulJsonControllerTest extends TestCase
     {
         request()->setMethod('POST');
         request()->request->set('name', 'Dummy');
-        $instance = $this->controller(DummyResourceWithValidationsRules::class);
+        $instance = $this->controller('store', DummyResourceWithValidationsRules::class);
 
         $this->resourceMock->shouldReceive('authorizationKey')->andReturn('Model');
         $this->resourceMock->shouldReceive('model')->andReturn(new DummyModel);
@@ -122,7 +123,7 @@ class RestfulJsonControllerTest extends TestCase
     {
         request()->setMethod('POST');
         request()->request->set('name', 'Dummy');
-        $instance = $this->controller();
+        $instance = $this->controller('update');
         $entityStub = Mockery::mock(DummyModel::class);
 
         $this->resourceMock->shouldReceive('authorizationKey')->andReturn('Model');
@@ -143,7 +144,7 @@ class RestfulJsonControllerTest extends TestCase
     {
         request()->setMethod('POST');
         request()->request->set('name', 'Dummy');
-        $instance = $this->controller(DummyResourceWithValidationsRules::class);
+        $instance = $this->controller('update', DummyResourceWithValidationsRules::class);
         $entityStub = Mockery::mock(DummyModel::class);
 
         $this->resourceMock->shouldReceive('authorizationKey')->andReturn('Model');
@@ -157,7 +158,7 @@ class RestfulJsonControllerTest extends TestCase
     {
         request()->setMethod('POST');
         request()->request->set('name', 'Dummy');
-        $instance = $this->controller(DummyResourceWithValidationsRules::class);
+        $instance = $this->controller('update', DummyResourceWithValidationsRules::class);
         $entityStub = Mockery::mock(DummyModel::class);
 
         $this->resourceMock->shouldReceive('authorizationKey')->andReturn('Model');
@@ -176,7 +177,7 @@ class RestfulJsonControllerTest extends TestCase
     {
         request()->setMethod('DELETE');
         request()->request->set('name', 'Dummy');
-        $instance = $this->controller();
+        $instance = $this->controller('destroy');
         $entityStub = Mockery::mock(DummyModel::class);
 
         $this->resourceMock->shouldReceive('authorizationKey')->andReturn('Model');
@@ -196,7 +197,7 @@ class RestfulJsonControllerTest extends TestCase
     {
         request()->setMethod('DELETE');
         request()->request->set('name', 'Dummy');
-        $instance = $this->controller(DummyResourceWithValidationsRules::class);
+        $instance = $this->controller('destroy', DummyResourceWithValidationsRules::class);
         $entityStub = Mockery::mock(DummyModel::class);
 
         $this->resourceMock->shouldReceive('authorizationKey')->andReturn('Model');
@@ -210,7 +211,7 @@ class RestfulJsonControllerTest extends TestCase
     {
         request()->setMethod('POST');
         request()->request->set('name', 'Dummy');
-        $instance = $this->controller(DummyResourceWithValidationsRules::class);
+        $instance = $this->controller('destroy', DummyResourceWithValidationsRules::class);
         $entityStub = Mockery::mock(DummyModel::class);
 
         $this->resourceMock->shouldReceive('authorizationKey')->andReturn('Model');
@@ -224,12 +225,16 @@ class RestfulJsonControllerTest extends TestCase
     }
 
     protected function controller(
+        string $method,
         string $resource = DummyResource::class,
         Request $request = null
     ): RestfulJsonController {
 
         if (is_null($request)) {
             $request = request();
+            $request->setRouteResolver(function () use ($method) {
+                return new LaravelRoute([], '', ['controller' => RestfulJsonController::class . "@{$method}"]);
+            });
         }
 
         $this->resourceMock = Mockery::mock($resource);
@@ -238,8 +243,11 @@ class RestfulJsonControllerTest extends TestCase
         return new RestfulJsonController($this->resourceMock);
     }
 
-    protected function arrayResponse(JsonResponse $response, int $code = JsonResponse::HTTP_OK)
-    {
+    protected
+    function arrayResponse(
+        JsonResponse $response,
+        int $code = JsonResponse::HTTP_OK
+    ) {
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals($response->getStatusCode(), $code);
 
