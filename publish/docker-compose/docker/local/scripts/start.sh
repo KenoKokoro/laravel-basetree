@@ -48,6 +48,9 @@ if [ ! -z "$PUID" ]; then
   delgroup nginx
   addgroup --system --gid ${PGID} nginx
   adduser --system --ingroup nginx --disabled-password --home /var/cache/nginx --disabled-login --uid ${PUID} nginx
+  # config folder required by the tinker package
+  mkdir /var/cache/nginx/.config
+  chown -Rf nginx:nginx /var/cache/nginx
   chown -Rf nginx:nginx ${ROOT}
  else
   # Always chown webroot for better mounting
