@@ -4,7 +4,7 @@ MAINTAINER Jimmy <stefan.brankovik@cosmicdevelopment.com>
 
 ### NGINX
 ARG NGINX_VERSION=1.10.3-1+deb9u1
-ARG YARN_VERSION=1.5.1-1
+ARG YARN_VERSION=1.7.0-1
 
 RUN apt-get update && apt-get install -y --no-install-recommends apt-utils gnupg2 apt-transport-https
 ### Required repositories
@@ -43,7 +43,7 @@ RUN apt-get install -y nodejs
 
 ### CLEANUP
 RUN rm -rf /var/cache/* \
-    && apt-get purge -y gcc musl-dev linux-headers libffi-dev python-dev autoconf && apt-get autoremove -y
+    && apt-get purge -y musl-dev linux-headers libffi-dev python-dev autoconf && apt-get autoremove -y
 
 ### Make scipt executable
 ADD local/scripts/start.sh /entrypoint.sh

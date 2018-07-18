@@ -38,15 +38,15 @@ class BaseController extends Controller
     /**
      * @param string $ability
      * @param string $key
-     * @param null   $model
+     * @param array  $extra
      * @return void
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    protected function checkAccess(string $ability, string $key, $model = null): void
+    protected function checkAccess(string $ability, string $key, ...$extra): void
     {
         $method = request()->route()->getActionMethod();
         if (config('base-tree.authorization') and ! in_array($method, $this->excludedAuthorization)) {
-            $this->authorize($ability, [$key, $this->permission, $model]);
+            $this->authorize($ability, array_merge([$key, $this->permission], $extra));
         }
     }
 }
