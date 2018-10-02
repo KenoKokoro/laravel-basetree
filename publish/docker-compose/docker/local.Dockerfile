@@ -4,7 +4,7 @@ MAINTAINER Jimmy <stefan.brankovik@cosmicdevelopment.com>
 
 ### NGINX
 ARG NGINX_VERSION=1.10.3-1+deb9u1
-ARG YARN_VERSION=1.7.0-1
+ARG YARN_VERSION=1.10.1-1
 
 RUN apt-get update && apt-get install -y --no-install-recommends apt-utils gnupg2 apt-transport-https
 ### Required repositories
@@ -22,7 +22,7 @@ RUN unlink /etc/nginx/sites-enabled/default \
     && touch /usr/share/nginx/logs/error.log
 
 # Required packages ( supervisor and composer )
-RUN apt-get install -y wget supervisor curl ca-certificates dialog git \
+RUN apt-get install -y wget supervisor curl ca-certificates dialog git unzip\
     musl-dev libpng-dev libffi-dev vim libsqlite3-dev libicu-dev libxml2-dev libjpeg-dev libfreetype6-dev
 
 ### PHP
@@ -44,6 +44,7 @@ RUN apt-get install -y nodejs
 ### CLEANUP
 RUN rm -rf /var/cache/* \
     && apt-get purge -y musl-dev linux-headers libffi-dev python-dev autoconf && apt-get autoremove -y
+RUN mkdir -p /var/cache/nginx/.config
 
 ### Make scipt executable
 ADD local/scripts/start.sh /entrypoint.sh

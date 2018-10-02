@@ -4,11 +4,12 @@
 namespace BaseTree\Tests\Unit\Responses;
 
 
+use BaseTree\Providers\BaseTreeServiceProvider;
 use BaseTree\Responses\HttpResponse;
+use BaseTree\Tests\Unit\TestCase;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\MessageBag;
-use Tests\TestCase;
 
 class HttpResponseTest extends TestCase
 {
@@ -24,7 +25,7 @@ class HttpResponseTest extends TestCase
     }
 
     /** @test */
-    public function success_should_return_redirect_with_successful_message_and_additional_values()
+    public function success_should_return_redirect_with_successful_message_and_additional_values(): void
     {
         $response = $this->instance->success('/home', '', ['append' => 'message']);
 
@@ -35,7 +36,7 @@ class HttpResponseTest extends TestCase
     }
 
     /** @test */
-    public function danger_should_return_redirect_with_danger_message_including_warnings_and_input_data()
+    public function danger_should_return_redirect_with_danger_message_including_warnings_and_input_data(): void
     {
         $response = $this->instance->danger('/home', '', ['append' => 'message'], ['input' => 'old'],
             new MessageBag(['error1' => 'error1']));
@@ -53,11 +54,11 @@ class HttpResponseTest extends TestCase
     }
 
     /** @test */
-    public function redirect_without_specific_path_will_return_to_the_previous_path()
+    public function redirect_without_specific_path_will_return_to_the_previous_path(): void
     {
         URL::shouldReceive('previous')->andReturn('http://localhost/previous');
         URL::shouldReceive('to')->with('http://localhost/previous', [], null)->andReturn('http://localhost/previous');
-        URL::shouldReceive('getRequest')->andReturn(request());
+        URL::shouldReceive('getRequest')->andReturn($this->request);
 
         $response = $this->instance->success();
 
@@ -66,14 +67,16 @@ class HttpResponseTest extends TestCase
     }
 
     /** @test */
-    public function http_response_facade_is_registered()
+    public function http_response_facade_is_registered(): void
     {
-        $this->assertInstanceOf(HttpResponse::class, app('basetree.response.http'));
+        $this->app->register(BaseTreeServiceProvider::class);
+        $this->assertInstanceOf(HttpResponse::class, $this->app->make('basetree.response.http'));
     }
 
     /** @test */
-    public function http_facade_works()
+    public function http_facade_works(): void
     {
+        $this->app->register(BaseTreeServiceProvider::class);
         $response = \Http::success('/home');
 
         $this->assertInstanceOf(RedirectResponse::class, $response);

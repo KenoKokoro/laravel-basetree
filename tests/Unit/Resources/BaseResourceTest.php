@@ -12,12 +12,13 @@ use BaseTree\Tests\Fake\DummyResource;
 use BaseTree\Tests\Fake\DummyResourceWithCallback;
 use BaseTree\Tests\Fake\DummyResourceWithValidationsRules;
 use BaseTree\Tests\Fake\EloquentDummy;
+use BaseTree\Tests\Unit\TestCase;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Mockery;
-use Tests\TestCase;
+use Yajra\DataTables\DataTablesServiceProvider;
 
 /**
  * @property Mockery\MockInterface model
@@ -33,10 +34,11 @@ class BaseResourceTest extends TestCase
     public function setUp()
     {
         parent::setUp();
+        $this->app->register(DataTablesServiceProvider::class);
     }
 
     /** @test */
-    public function index_default_response()
+    public function index_default_response(): void
     {
         $instance = $this->resourceInstance();
         $this->queryMock->shouldReceive('with')->andReturnSelf();
@@ -48,15 +50,14 @@ class BaseResourceTest extends TestCase
     }
 
     /** @test */
-    public function index_should_paginate()
+    public function index_should_paginate(): void
     {
-        request()->query->add(['paginate' => 1]);
-        $instance = $this->resourceInstance(request());
+        $this->request->query->add(['paginate' => 1]);
+        $instance = $this->resourceInstance($this->request);
 
         $this->queryMock->shouldReceive('with')->andReturnSelf();
         $items = new Collection(['item1', 'item2', 'item3']);
-        $this->queryMock->shouldReceive('paginate')
-                        ->andReturn(new LengthAwarePaginator($items, $items->count(), 15));
+        $this->queryMock->shouldReceive('paginate')->andReturn(new LengthAwarePaginator($items, $items->count(), 15));
 
         $response = $instance->index();
         $this->assertInstanceOf(Paginator::class, $response);
@@ -67,10 +68,10 @@ class BaseResourceTest extends TestCase
     }
 
     /** @test */
-    public function index_should_return_datatable_response()
+    public function index_should_return_datatable_response(): void
     {
-        request()->query->add(['datatable' => 1]);
-        $instance = $this->resourceInstance(request());
+        $this->request->query->add(['datatable' => 1]);
+        $instance = $this->resourceInstance($this->request);
 
         $this->queryMock->shouldReceive('with')->andReturnSelf();
         $items = new Collection(['item1', 'item2', 'item3']);
@@ -88,7 +89,7 @@ class BaseResourceTest extends TestCase
      * @test
      * @expectedException \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function find_without_relationships_should_fail_if_entry_does_not_exists()
+    public function find_without_relationships_should_fail_if_entry_does_not_exists(): void
     {
         $instance = $this->resourceInstance();
         $this->model->shouldReceive('find')->with(1)->andReturn(null);
@@ -96,7 +97,7 @@ class BaseResourceTest extends TestCase
     }
 
     /** @test */
-    public function find_without_relationships_should_return_found_model()
+    public function find_without_relationships_should_return_found_model(): void
     {
         $instance = $this->resourceInstance();
         $this->model->shouldReceive('find')->with(1)->andReturnSelf();
@@ -109,7 +110,7 @@ class BaseResourceTest extends TestCase
      * @test
      * @expectedException \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function find_with_relations_should_fail_if_entry_does_not_exist()
+    public function find_with_relations_should_fail_if_entry_does_not_exist(): void
     {
         $instance = $this->resourceInstance();
 
@@ -118,7 +119,7 @@ class BaseResourceTest extends TestCase
     }
 
     /** @test */
-    public function find_with_relations_should_return_found_model_with_the_wanted_relations()
+    public function find_with_relations_should_return_found_model_with_the_wanted_relations(): void
     {
         $instance = $this->resourceInstance();
 
@@ -128,7 +129,7 @@ class BaseResourceTest extends TestCase
     }
 
     /** @test */
-    public function store_should_write_the_given_attributes_to_database()
+    public function store_should_write_the_given_attributes_to_database(): void
     {
         $instance = $this->resourceInstance();
         $attributes = ['attr1' => 'value1', 'attr2' => 'value2'];
@@ -143,9 +144,9 @@ class BaseResourceTest extends TestCase
     }
 
     /** @test */
-    public function store_should_call_the_callback_if_the_resource_has_implemented_the_callback_interface()
+    public function store_should_call_the_callback_if_the_resource_has_implemented_the_callback_interface(): void
     {
-        $instance = $this->resourceInstance(request(), DummyResourceWithCallback::class);
+        $instance = $this->resourceInstance($this->request, DummyResourceWithCallback::class);
         $attributes = ['attr1' => 'value1', 'attr2' => 'value2'];
 
         $this->model->shouldReceive('create')->with($attributes)->andReturnSelf();
@@ -161,7 +162,7 @@ class BaseResourceTest extends TestCase
     }
 
     /** @test */
-    public function update_entity_should_write_the_given_attributes_for_the_given_entity()
+    public function update_entity_should_write_the_given_attributes_for_the_given_entity(): void
     {
         $instance = $this->resourceInstance();
         $attributes = ['attr1' => 'value1', 'attr2' => 'value2'];
@@ -177,9 +178,10 @@ class BaseResourceTest extends TestCase
     }
 
     /** @test */
-    public function update_entity_should_write_the_given_attributes_for_the_given_entity_and_execute_the_callback()
+    public function update_entity_should_write_the_given_attributes_for_the_given_entity_and_execute_the_callback(
+    ): void
     {
-        $instance = $this->resourceInstance(request(), DummyResourceWithCallback::class);
+        $instance = $this->resourceInstance($this->request, DummyResourceWithCallback::class);
         $attributes = ['attr1' => 'value1', 'attr2' => 'value2'];
 
         $this->model->shouldReceive('update')->with($attributes)->andReturnSelf();
@@ -195,7 +197,7 @@ class BaseResourceTest extends TestCase
     }
 
     /** @test */
-    public function update_entity_should_ignore_the_excluded_on_update_values()
+    public function update_entity_should_ignore_the_excluded_on_update_values(): void
     {
         $instance = $this->resourceInstance();
         $attributes = ['attr1' => 'value1', 'attr2' => 'value2', 'attr3' => 'value3'];
@@ -211,7 +213,7 @@ class BaseResourceTest extends TestCase
     }
 
     /** @test */
-    public function update_entity_should_ignore_empty_values_if_provided()
+    public function update_entity_should_ignore_empty_values_if_provided(): void
     {
         $fillable = ['attr1', 'attr4', 'attr5', 'attr6', 'attr7'];
         $instance = $this->resourceInstance(null, DummyResource::class, $fillable);
@@ -229,7 +231,7 @@ class BaseResourceTest extends TestCase
     }
 
     /** @test */
-    public function update_entity_should_not_ignore_empty_values_if_provided_with_value()
+    public function update_entity_should_not_ignore_empty_values_if_provided_with_value(): void
     {
         $fillable = ['attr1', 'attr4', 'attr5', 'attr6', 'attr7'];
         $instance = $this->resourceInstance(null, DummyResource::class, $fillable);
@@ -251,7 +253,7 @@ class BaseResourceTest extends TestCase
     }
 
     /** @test */
-    public function destroy_should_delete_the_entity_from_database()
+    public function destroy_should_delete_the_entity_from_database(): void
     {
         $instance = $this->resourceInstance();
 
@@ -261,9 +263,9 @@ class BaseResourceTest extends TestCase
     }
 
     /** @test */
-    public function destroy_entity_should_delete_the_given_entity_from_database_and_execute_the_callback()
+    public function destroy_entity_should_delete_the_given_entity_from_database_and_execute_the_callback(): void
     {
-        $instance = $this->resourceInstance(request(), DummyResourceWithCallback::class);
+        $instance = $this->resourceInstance($this->request, DummyResourceWithCallback::class);
 
         $this->model->shouldReceive('delete')->andReturn(true);
         $this->model->shouldReceive('find')->with(1);
@@ -272,7 +274,7 @@ class BaseResourceTest extends TestCase
     }
 
     /** @test */
-    public function repository_should_return_the_injected_repository()
+    public function repository_should_return_the_injected_repository(): void
     {
         $instance = $this->resourceInstance();
 
@@ -280,7 +282,7 @@ class BaseResourceTest extends TestCase
     }
 
     /** @test */
-    public function model_should_return_the_injected_model_in_the_repository()
+    public function model_should_return_the_injected_model_in_the_repository(): void
     {
         $instance = $this->resourceInstance();
 
@@ -288,7 +290,7 @@ class BaseResourceTest extends TestCase
     }
 
     /** @test */
-    public function authorization_key_should_return_the_full_name_of_the_model_including_namespace()
+    public function authorization_key_should_return_the_full_name_of_the_model_including_namespace(): void
     {
         $instance = $this->resourceInstance();
 
@@ -296,7 +298,7 @@ class BaseResourceTest extends TestCase
     }
 
     /** @test */
-    public function resource_can_have_validation_rules()
+    public function resource_can_have_validation_rules(): void
     {
         /** @var DummyResourceWithValidationsRules $instance */
         $instance = $this->resourceInstance(null, DummyResourceWithValidationsRules::class);
@@ -311,7 +313,7 @@ class BaseResourceTest extends TestCase
         array $fillable = null
     ): BaseResource {
         if (is_null($request)) {
-            $request = request();
+            $request = $this->request;
         }
 
         if (is_null($fillable)) {

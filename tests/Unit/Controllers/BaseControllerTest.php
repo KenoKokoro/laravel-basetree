@@ -8,9 +8,9 @@ use BaseTree\Controllers\BaseController;
 use BaseTree\Responses\HttpResponse;
 use BaseTree\Responses\JsonResponse;
 use BaseTree\Tests\Fake\DummyModel;
-use Illuminate\Routing\Route;
 use BaseTree\Tests\Fake\Wrappers\BaseControllerTestWrapper;
-use Tests\TestCase;
+use BaseTree\Tests\Unit\TestCase;
+use Illuminate\Routing\Route;
 
 class BaseControllerTest extends TestCase
 {
@@ -26,9 +26,9 @@ class BaseControllerTest extends TestCase
     }
 
     /** @test */
-    public function response_should_be_json_if_requested()
+    public function response_should_be_json_if_requested(): void
     {
-        request()->headers->set('accept', ['application/json']);
+        $this->request->headers->set('accept', ['application/json']);
 
         $response = $this->controller->testResponse();
 
@@ -36,7 +36,7 @@ class BaseControllerTest extends TestCase
     }
 
     /** @test */
-    public function default_response_should_be_http_response()
+    public function default_response_should_be_http_response(): void
     {
         $response = $this->controller->testResponse();
 
@@ -47,20 +47,20 @@ class BaseControllerTest extends TestCase
      * @test
      * @expectedException \Illuminate\Auth\Access\AuthorizationException
      */
-    public function check_access_should_be_called_if_the_environment_variable_is_set()
+    public function check_access_should_be_called_if_the_environment_variable_is_set(): void
     {
-        config()->set('base-tree.authorization', true);
-        request()->setRouteResolver(function () {
+        $this->config->set('base-tree.authorization', true);
+        $this->request->setRouteResolver(function() {
             return new Route([], '', ['uses' => BaseController::class . "@index"]);
         });
         $this->controller->testCheckAccess('view', DummyModel::class, new DummyModel);
     }
 
     /** @test */
-    public function check_access_should_not_be_called_if_the_action_method_is_excluded_for_that_controller()
+    public function check_access_should_not_be_called_if_the_action_method_is_excluded_for_that_controller(): void
     {
-        config()->set('base-tree.authorization', true);
-        request()->setRouteResolver(function () {
+        $this->config->set('base-tree.authorization', true);
+        $this->request->setRouteResolver(function() {
             return new Route([], '', ['controller' => BaseController::class . "@index"]);
         });
         $this->controller->setExcluded(['index']);

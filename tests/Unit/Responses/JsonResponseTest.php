@@ -4,12 +4,13 @@
 namespace BaseTree\Tests\Unit\Responses;
 
 
+use BaseTree\Providers\BaseTreeServiceProvider;
 use BaseTree\Responses\JsonResponse;
 use BaseTree\Tests\Fake\ClientLoggerStub;
+use BaseTree\Tests\Unit\TestCase;
 use Illuminate\Http\JsonResponse as LaravelJsonResponse;
 use Illuminate\Support\Facades\App;
 use Mockery as m;
-use Tests\TestCase;
 
 class JsonResponseTest extends TestCase
 {
@@ -25,13 +26,13 @@ class JsonResponseTest extends TestCase
     }
 
     /** @test */
-    public function json_response_is_child_of_laravel_json_response()
+    public function json_response_is_child_of_laravel_json_response(): void
     {
         $this->assertTrue($this->instance instanceof LaravelJsonResponse);
     }
 
     /** @test */
-    public function success_default_response()
+    public function success_default_response(): void
     {
         $success = $this->instance->success();
         $response = $success->getData();
@@ -42,14 +43,14 @@ class JsonResponseTest extends TestCase
     }
 
     /** @test */
-    public function success_modify_default_message()
+    public function success_modify_default_message(): void
     {
         $response = $this->instance->success('OK')->getData();
         $this->assertEquals($response->message, 'OK');
     }
 
     /** @test */
-    public function success_append_new_key_to_response()
+    public function success_append_new_key_to_response(): void
     {
         $response = $this->instance->success('', ['key' => 'value'])->getData();
         $this->assertCount(2, (array)$response);
@@ -58,7 +59,7 @@ class JsonResponseTest extends TestCase
     }
 
     /** @test */
-    public function created_default_response()
+    public function created_default_response(): void
     {
         $created = $this->instance->created();
         $response = $created->getData();
@@ -69,14 +70,14 @@ class JsonResponseTest extends TestCase
     }
 
     /** @test */
-    public function created_modify_default_message()
+    public function created_modify_default_message(): void
     {
         $response = $this->instance->created('OK')->getData();
         $this->assertEquals($response->message, 'OK');
     }
 
     /** @test */
-    public function created_append_new_key_to_response()
+    public function created_append_new_key_to_response(): void
     {
         $response = $this->instance->created('', ['key' => 'value'])->getData();
         $this->assertCount(2, (array)$response);
@@ -85,7 +86,7 @@ class JsonResponseTest extends TestCase
     }
 
     /** @test */
-    public function forbidden_default_response()
+    public function forbidden_default_response(): void
     {
         $forbidden = $this->instance->forbidden();
         $response = $forbidden->getData();
@@ -96,14 +97,14 @@ class JsonResponseTest extends TestCase
     }
 
     /** @test */
-    public function forbidden_modify_default_message()
+    public function forbidden_modify_default_message(): void
     {
         $response = $this->instance->forbidden('OK')->getData();
         $this->assertEquals($response->message, 'OK');
     }
 
     /** @test */
-    public function unauthorized_default_response()
+    public function unauthorized_default_response(): void
     {
         $unauthorized = $this->instance->unauthorized();
         $response = $unauthorized->getData();
@@ -114,14 +115,14 @@ class JsonResponseTest extends TestCase
     }
 
     /** @test */
-    public function unauthorized_modify_default_message()
+    public function unauthorized_modify_default_message(): void
     {
         $response = $this->instance->forbidden('OK')->getData();
         $this->assertEquals($response->message, 'OK');
     }
 
     /** @test */
-    public function unprocessed_entity_default_response()
+    public function unprocessed_entity_default_response(): void
     {
         $unprocessedEntity = $this->instance->unprocessableEntity();
         $response = $unprocessedEntity->getData();
@@ -132,14 +133,14 @@ class JsonResponseTest extends TestCase
     }
 
     /** @test */
-    public function unprocessable_entity_modify_default_message()
+    public function unprocessable_entity_modify_default_message(): void
     {
         $response = $this->instance->unprocessableEntity('OK')->getData();
         $this->assertEquals($response->message, 'OK');
     }
 
     /** @test */
-    public function unprocessable_entity_append_new_key_to_response()
+    public function unprocessable_entity_append_new_key_to_response(): void
     {
         $response = $this->instance->unprocessableEntity('', ['key' => 'value'])->getData();
         $this->assertCount(2, (array)$response);
@@ -148,7 +149,7 @@ class JsonResponseTest extends TestCase
     }
 
     /** @test */
-    public function not_found_default_response()
+    public function not_found_default_response(): void
     {
         $notFound = $this->instance->notFound();
         $response = $notFound->getData();
@@ -159,14 +160,14 @@ class JsonResponseTest extends TestCase
     }
 
     /** @test */
-    public function not_found_modify_default_message()
+    public function not_found_modify_default_message(): void
     {
         $response = $this->instance->notFound('OK')->getData();
         $this->assertEquals($response->message, 'OK');
     }
 
     /** @test */
-    public function not_found_entity_append_new_key_to_response()
+    public function not_found_entity_append_new_key_to_response(): void
     {
         $response = $this->instance->notFound('', ['key' => 'value'])->getData();
         $this->assertCount(2, (array)$response);
@@ -175,7 +176,7 @@ class JsonResponseTest extends TestCase
     }
 
     /** @test */
-    public function internal_error_default_response()
+    public function internal_error_default_response(): void
     {
         $internalError = $this->instance->internalError();
         $response = $internalError->getData();
@@ -186,14 +187,14 @@ class JsonResponseTest extends TestCase
     }
 
     /** @test */
-    public function internal_error_modify_default_message()
+    public function internal_error_modify_default_message(): void
     {
         $response = $this->instance->internalError('OK')->getData();
         $this->assertEquals($response->message, 'OK');
     }
 
     /** @test */
-    public function internal_error_entity_append_new_key_to_response()
+    public function internal_error_entity_append_new_key_to_response(): void
     {
         $response = $this->instance->internalError('', ['key' => 'value'])->getData();
         $this->assertCount(2, (array)$response);
@@ -202,15 +203,16 @@ class JsonResponseTest extends TestCase
     }
 
     /** @test */
-    public function json_response_facade_is_registered()
+    public function json_response_facade_is_registered(): void
     {
-        $this->assertInstanceOf(JsonResponse::class, app('basetree.response.json'));
+        $this->app->register(BaseTreeServiceProvider::class);
+        $this->assertInstanceOf(JsonResponse::class, $this->app->make('basetree.response.json'));
     }
 
     /** @test */
-    public function response_should_try_to_call_the_logger_if_config_enables_it()
+    public function response_should_try_to_call_the_logger_if_config_enables_it(): void
     {
-        config()->set('base-tree.log', true);
+        $this->config->set('base-tree.log', true);
         $loggerStub = m::mock(new ClientLoggerStub);
         App::shouldReceive('make')->with('BaseTree\Modules\Log\ClientLogger')->andReturn($loggerStub);
         $loggerStub->shouldReceive('writeIncoming');
@@ -219,8 +221,9 @@ class JsonResponseTest extends TestCase
     }
 
     /** @test */
-    public function json_facade_works()
+    public function json_facade_works(): void
     {
+        $this->app->register(BaseTreeServiceProvider::class);
         $response = \Json::success();
 
         $this->assertInstanceOf(LaravelJsonResponse::class, $response);

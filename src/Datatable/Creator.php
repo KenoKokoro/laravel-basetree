@@ -40,6 +40,7 @@ class Creator implements Arrayable, JsonSerializable, Jsonable
     /**
      * @param $query
      * @return DataTableAbstract
+     * @throws \Exception
      */
     public function of($query)
     {
