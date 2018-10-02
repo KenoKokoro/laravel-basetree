@@ -5,13 +5,20 @@ namespace BaseTree\Tests\Unit\Datatable;
 
 
 use BaseTree\Datatable\Creator;
+use BaseTree\Tests\Unit\TestCase;
 use Illuminate\Database\Eloquent\Collection;
-use Tests\TestCase;
+use Yajra\DataTables\DataTablesServiceProvider;
 
 class CreatorTest extends TestCase
 {
+    public function setUp()
+    {
+        parent::setUp();
+        $this->app->register(DataTablesServiceProvider::class);
+    }
+
     /** @test */
-    public function creator_json_serialize_should_return_same_as_to_array()
+    public function creator_json_serialize_should_return_same_as_to_array(): void
     {
         $creator = new Creator;
 

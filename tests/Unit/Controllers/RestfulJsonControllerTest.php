@@ -8,12 +8,13 @@ use BaseTree\Controllers\RestfulJsonController;
 use BaseTree\Tests\Fake\DummyModel;
 use BaseTree\Tests\Fake\DummyResource;
 use BaseTree\Tests\Fake\DummyResourceWithValidationsRules;
+use BaseTree\Tests\Unit\TestCase;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route as LaravelRoute;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Mockery;
-use Tests\TestCase;
 
 /**
  * @property Mockery\MockInterface resourceMock
@@ -23,14 +24,14 @@ class RestfulJsonControllerTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        request()->headers->set('accept', ['application/json']);
+        $this->request->headers->set('accept', ['application/json']);
     }
 
     /** @test */
-    public function index_should_return_all_info()
+    public function index_should_return_all_info(): void
     {
         $instance = $this->controller('index');
-        $data = collect(['value1', 'value2', 'value3']);
+        $data = Collection::make(['value1', 'value2', 'value3']);
 
         $this->resourceMock->shouldReceive('authorizationKey')->andReturn('Model');
         $this->resourceMock->shouldReceive('model')->andReturn(new DummyModel);
@@ -41,7 +42,7 @@ class RestfulJsonControllerTest extends TestCase
     }
 
     /** @test */
-    public function show_should_return_instance_without_fields_if_not_defined()
+    public function show_should_return_instance_without_fields_if_not_defined(): void
     {
         $instance = $this->controller('show');
         $data = ['name' => 'Test Name'];
@@ -49,29 +50,29 @@ class RestfulJsonControllerTest extends TestCase
         $this->resourceMock->shouldReceive('show')->with(1, [])->andReturn($data);
         $this->resourceMock->shouldReceive('authorizationKey')->andReturn('Model');
 
-        $array = $this->arrayResponse($instance->show(request(), 1));
+        $array = $this->arrayResponse($instance->show($this->request, 1));
         $this->assertEquals($data, $array['data']);
     }
 
     /** @test */
-    public function show_should_return_found_instance_with_fields_if_defined_on_request()
+    public function show_should_return_found_instance_with_fields_if_defined_on_request(): void
     {
-        request()->query->set('fields', ['Field1', 'Field2']);
+        $this->request->query->set('fields', ['Field1', 'Field2']);
         $instance = $this->controller('show');
         $data = ['name' => 'Test Name'];
 
         $this->resourceMock->shouldReceive('show')->with(1, ['Field1', 'Field2'])->andReturn($data);
         $this->resourceMock->shouldReceive('authorizationKey')->andReturn('Model');
 
-        $array = $this->arrayResponse($instance->show(request(), 1));
+        $array = $this->arrayResponse($instance->show($this->request, 1));
         $this->assertEquals($data, $array['data']);
     }
 
     /** @test */
-    public function store_can_be_called_without_validation_rules()
+    public function store_can_be_called_without_validation_rules(): void
     {
-        request()->setMethod('POST');
-        request()->request->set('name', 'Dummy');
+        $this->request->setMethod('POST');
+        $this->request->request->set('name', 'Dummy');
         $instance = $this->controller('store');
 
         $this->resourceMock->shouldReceive('authorizationKey')->andReturn('Model');
@@ -80,7 +81,7 @@ class RestfulJsonControllerTest extends TestCase
         $this->resourceMock->shouldReceive('store')->with(['name' => 'Dummy'])->andReturn(['name' => 'Dummy']);
         DB::shouldReceive('commit')->once();
 
-        $array = $this->arrayResponse($instance->store(request()), JsonResponse::HTTP_CREATED);
+        $array = $this->arrayResponse($instance->store($this->request), JsonResponse::HTTP_CREATED);
         $this->assertEquals(['name' => 'Dummy'], $array['data']);
     }
 
@@ -88,23 +89,23 @@ class RestfulJsonControllerTest extends TestCase
      * @test
      * @expectedException \Illuminate\Validation\ValidationException
      */
-    public function store_should_throw_validation_exception_response_if_rules_does_not_match()
+    public function store_should_throw_validation_exception_response_if_rules_does_not_match(): void
     {
-        request()->setMethod('POST');
-        request()->request->set('name', 'Dummy');
+        $this->request->setMethod('POST');
+        $this->request->request->set('name', 'Dummy');
         $instance = $this->controller('store', DummyResourceWithValidationsRules::class);
 
         $this->resourceMock->shouldReceive('authorizationKey')->andReturn('Model');
         $this->resourceMock->shouldReceive('model')->andReturn(new DummyModel);
         $this->resourceMock->shouldReceive('storeRules')->andReturn(['missing' => 'required']);
-        $instance->store(request());
+        $instance->store($this->request);
     }
 
     /** @test */
-    public function store_should_validate_the_request_input()
+    public function store_should_validate_the_request_input(): void
     {
-        request()->setMethod('POST');
-        request()->request->set('name', 'Dummy');
+        $this->request->setMethod('POST');
+        $this->request->request->set('name', 'Dummy');
         $instance = $this->controller('store', DummyResourceWithValidationsRules::class);
 
         $this->resourceMock->shouldReceive('authorizationKey')->andReturn('Model');
@@ -114,15 +115,15 @@ class RestfulJsonControllerTest extends TestCase
         $this->resourceMock->shouldReceive('store')->with(['name' => 'Dummy'])->andReturn(['name' => 'Dummy']);
         DB::shouldReceive('commit')->once();
 
-        $array = $this->arrayResponse($instance->store(request()), JsonResponse::HTTP_CREATED);
+        $array = $this->arrayResponse($instance->store($this->request), JsonResponse::HTTP_CREATED);
         $this->assertEquals(['name' => 'Dummy'], $array['data']);
     }
 
     /** @test */
-    public function update_can_be_called_without_rules()
+    public function update_can_be_called_without_rules(): void
     {
-        request()->setMethod('POST');
-        request()->request->set('name', 'Dummy');
+        $this->request->setMethod('POST');
+        $this->request->request->set('name', 'Dummy');
         $instance = $this->controller('update');
         $entityStub = Mockery::mock(DummyModel::class);
 
@@ -132,7 +133,7 @@ class RestfulJsonControllerTest extends TestCase
         $this->resourceMock->shouldReceive('updateEntity')->with($entityStub, ['name' => 'Dummy'])
                            ->andReturn(['name' => 'Dummy']);
         DB::shouldReceive('commit')->once();
-        $array = $this->arrayResponse($instance->update(request(), 1), JsonResponse::HTTP_OK);
+        $array = $this->arrayResponse($instance->update($this->request, 1), JsonResponse::HTTP_OK);
         $this->assertEquals(['name' => 'Dummy'], $array['data']);
     }
 
@@ -140,24 +141,25 @@ class RestfulJsonControllerTest extends TestCase
      * @test
      * @expectedException \Illuminate\Validation\ValidationException
      */
-    public function update_should_throw_validation_exception_response_if_rules_does_not_match()
+    public function update_should_throw_validation_exception_response_if_rules_does_not_match(): void
     {
-        request()->setMethod('POST');
-        request()->request->set('name', 'Dummy');
+        $this->request->setMethod('POST');
+        $this->request->request->set('name', 'Dummy');
         $instance = $this->controller('update', DummyResourceWithValidationsRules::class);
         $entityStub = Mockery::mock(DummyModel::class);
 
         $this->resourceMock->shouldReceive('authorizationKey')->andReturn('Model');
         $this->resourceMock->shouldReceive('findWithoutRelations')->with(1)->andReturn($entityStub);
-        $this->resourceMock->shouldReceive('updateRules')->with(1, request())->andReturn(['missing' => 'required']);
-        $instance->update(request(), 1);
+        $this->resourceMock->shouldReceive('updateRules')->with(1, $this->request)
+                           ->andReturn(['missing' => 'required']);
+        $instance->update($this->request, 1);
     }
 
     /** @test */
-    public function update_should_validate_the_request_input()
+    public function update_should_validate_the_request_input(): void
     {
-        request()->setMethod('POST');
-        request()->request->set('name', 'Dummy');
+        $this->request->setMethod('POST');
+        $this->request->request->set('name', 'Dummy');
         $instance = $this->controller('update', DummyResourceWithValidationsRules::class);
         $entityStub = Mockery::mock(DummyModel::class);
 
@@ -168,60 +170,60 @@ class RestfulJsonControllerTest extends TestCase
         $this->resourceMock->shouldReceive('updateEntity')->with($entityStub, ['name' => 'Dummy'])
                            ->andReturn(['name' => 'Dummy']);
         DB::shouldReceive('commit')->once();
-        $array = $this->arrayResponse($instance->update(request(), 1), JsonResponse::HTTP_OK);
+        $array = $this->arrayResponse($instance->update($this->request, 1), JsonResponse::HTTP_OK);
         $this->assertEquals(['name' => 'Dummy'], $array['data']);
     }
 
     /** @test */
-    public function destroy_can_be_called_without_rules()
+    public function destroy_can_be_called_without_rules(): void
     {
-        request()->setMethod('DELETE');
-        request()->request->set('name', 'Dummy');
+        $this->request->setMethod('DELETE');
+        $this->request->request->set('name', 'Dummy');
         $instance = $this->controller('destroy');
         $entityStub = Mockery::mock(DummyModel::class);
 
         $this->resourceMock->shouldReceive('authorizationKey')->andReturn('Model');
         $this->resourceMock->shouldReceive('findWithoutRelations')->with(1)->andReturn($entityStub);
         DB::shouldReceive('beginTransaction')->once();
-        $this->resourceMock->shouldReceive('destroy')->with($entityStub, ['name' => 'Dummy'])
-                           ->andReturn(true);
+        $this->resourceMock->shouldReceive('destroy')->with($entityStub, ['name' => 'Dummy'])->andReturn(true);
         DB::shouldReceive('commit')->once();
-        $this->arrayResponse($instance->destroy(request(), 1), JsonResponse::HTTP_OK);
+        $this->arrayResponse($instance->destroy($this->request, 1), JsonResponse::HTTP_OK);
     }
 
     /**
      * @test
      * @expectedException \Illuminate\Validation\ValidationException
      */
-    public function destroy_should_throw_validation_exception_response_if_rules_does_not_match()
+    public function destroy_should_throw_validation_exception_response_if_rules_does_not_match(): void
     {
-        request()->setMethod('DELETE');
-        request()->request->set('name', 'Dummy');
+        $this->request->setMethod('DELETE');
+        $this->request->request->set('name', 'Dummy');
         $instance = $this->controller('destroy', DummyResourceWithValidationsRules::class);
         $entityStub = Mockery::mock(DummyModel::class);
 
         $this->resourceMock->shouldReceive('authorizationKey')->andReturn('Model');
         $this->resourceMock->shouldReceive('findWithoutRelations')->with(1)->andReturn($entityStub);
-        $this->resourceMock->shouldReceive('destroyRules')->with(1, request())->andReturn(['missing' => 'required']);
-        $instance->destroy(request(), 1);
+        $this->resourceMock->shouldReceive('destroyRules')->with(1, $this->request)
+                           ->andReturn(['missing' => 'required']);
+        $instance->destroy($this->request, 1);
     }
 
     /** @test */
-    public function destroy_should_validate_the_request_input()
+    public function destroy_should_validate_the_request_input(): void
     {
-        request()->setMethod('POST');
-        request()->request->set('name', 'Dummy');
+        $this->request->setMethod('POST');
+        $this->request->request->set('name', 'Dummy');
         $instance = $this->controller('destroy', DummyResourceWithValidationsRules::class);
         $entityStub = Mockery::mock(DummyModel::class);
 
         $this->resourceMock->shouldReceive('authorizationKey')->andReturn('Model');
         $this->resourceMock->shouldReceive('findWithoutRelations')->with(1)->andReturn($entityStub);
-        $this->resourceMock->shouldReceive('destroyRules')->with(1, request())->andReturn(['name' => 'required']);
+        $this->resourceMock->shouldReceive('destroyRules')->with(1, $this->request)->andReturn(['name' => 'required']);
         DB::shouldReceive('beginTransaction')->once();
         $this->resourceMock->shouldReceive('destroy')->with($entityStub, ['name' => 'Dummy'])
                            ->andReturn(true);
         DB::shouldReceive('commit')->once();
-        $this->arrayResponse($instance->destroy(request(), 1), JsonResponse::HTTP_OK);
+        $this->arrayResponse($instance->destroy($this->request, 1), JsonResponse::HTTP_OK);
     }
 
     protected function controller(
@@ -231,8 +233,8 @@ class RestfulJsonControllerTest extends TestCase
     ): RestfulJsonController {
 
         if (is_null($request)) {
-            $request = request();
-            $request->setRouteResolver(function () use ($method) {
+            $request = $this->request;
+            $request->setRouteResolver(function() use ($method) {
                 return new LaravelRoute([], '', ['controller' => RestfulJsonController::class . "@{$method}"]);
             });
         }
@@ -243,11 +245,10 @@ class RestfulJsonControllerTest extends TestCase
         return new RestfulJsonController($this->resourceMock);
     }
 
-    protected
-    function arrayResponse(
+    protected function arrayResponse(
         JsonResponse $response,
         int $code = JsonResponse::HTTP_OK
-    ) {
+    ): array {
         $this->assertInstanceOf(JsonResponse::class, $response);
         $this->assertEquals($response->getStatusCode(), $code);
 

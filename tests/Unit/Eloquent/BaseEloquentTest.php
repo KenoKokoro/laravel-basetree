@@ -8,13 +8,13 @@ use BaseTree\Eloquent\BaseEloquent;
 use BaseTree\Tests\Fake\DummyModel;
 use BaseTree\Tests\Fake\EloquentDummy;
 use BaseTree\Tests\Fake\EloquentDummyWithConstraints;
+use BaseTree\Tests\Unit\TestCase;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Mockery;
-use Tests\TestCase;
 
 /**
  * @property Mockery\MockInterface model
@@ -22,22 +22,17 @@ use Tests\TestCase;
  */
 class BaseEloquentTest extends TestCase
 {
-    public function setUp()
-    {
-        parent::setUp();
-    }
-
     /**
      * @test
      * @expectedException \BaseTree\Eloquent\InvalidArgumentException
      */
-    public function find_by_constraints_should_throw_exception_if_constraints_are_empty()
+    public function find_by_constraints_should_throw_exception_if_constraints_are_empty(): void
     {
         $this->eloquentInstance()->findByConstraints([]);
     }
 
     /** @test */
-    public function find_by_constraints_should_use_array_as_query_builder()
+    public function find_by_constraints_should_use_array_as_query_builder(): void
     {
         $instance = $this->eloquentInstance();
         $constraints = ['column1' => 'value1', 'column2' => 'value2'];
@@ -52,7 +47,7 @@ class BaseEloquentTest extends TestCase
     }
 
     /** @test */
-    public function paginated_should_return_filtered_pagination_from_the_given_builder()
+    public function paginated_should_return_filtered_pagination_from_the_given_builder(): void
     {
         $instance = $this->eloquentInstance();
         $paginatorStub = new LengthAwarePaginator(collect([]), 0, 20);
@@ -63,7 +58,7 @@ class BaseEloquentTest extends TestCase
     }
 
     /** @test */
-    public function paginated_should_return_pagination_from_injected_query()
+    public function paginated_should_return_pagination_from_injected_query(): void
     {
         $instance = $this->eloquentInstance();
         $paginatorStub = new LengthAwarePaginator(collect([]), 0, 20);
@@ -77,7 +72,7 @@ class BaseEloquentTest extends TestCase
      * @test
      * @expectedException \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function find_or_fail_should_throw_exception_if_there_arent_matching_results()
+    public function find_or_fail_should_throw_exception_if_there_arent_matching_results(): void
     {
         $instance = $this->eloquentInstance();
 
@@ -87,7 +82,7 @@ class BaseEloquentTest extends TestCase
     }
 
     /** @test */
-    public function get_by_ids_should_search_multiple_entries_by_same_key()
+    public function get_by_ids_should_search_multiple_entries_by_same_key(): void
     {
         $instance = $this->eloquentInstance();
 
@@ -98,7 +93,7 @@ class BaseEloquentTest extends TestCase
     }
 
     /** @test */
-    public function set_request_constraints_should_set_default_constraints_on_the_injected_query_builder()
+    public function set_request_constraints_should_set_default_constraints_on_the_injected_query_builder(): void
     {
         $instance = $this->eloquentInstance();
 
@@ -111,7 +106,7 @@ class BaseEloquentTest extends TestCase
     }
 
     /** @test */
-    public function set_request_constraints_should_set_default_constraints_from_the_predefined_constraints()
+    public function set_request_constraints_should_set_default_constraints_from_the_predefined_constraints(): void
     {
         $instance = $this->eloquentInstance(EloquentDummyWithConstraints::class);
 
@@ -125,7 +120,7 @@ class BaseEloquentTest extends TestCase
     }
 
     /** @test */
-    public function count_should_return_count_response_from_database()
+    public function count_should_return_count_response_from_database(): void
     {
         $instance = $this->eloquentInstance();
 

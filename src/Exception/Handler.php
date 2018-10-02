@@ -4,6 +4,7 @@
 namespace BaseTree\Exception;
 
 
+use BaseTree\Responses\JsonResponse;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
@@ -63,24 +64,26 @@ class Handler extends LaravelHandler
 
     protected function jsonException(Exception $exception)
     {
+        $json = $this->container->make(JsonResponse::class);
+
         if ($exception instanceof ValidationException) {
             /** @var $exception ValidationException */
-            return Json::unprocessableEntity($exception->getMessage(), [
+            return $json->unprocessableEntity($exception->getMessage(), [
                 'validator' => $exception->validator->getMessageBag()
             ]);
         } elseif ($exception instanceof ModelNotFoundException) {
-            return Json::notFound($exception->getMessage());
+            return $json->notFound($exception->getMessage());
         } elseif ($exception instanceof AuthorizationException
                   or $exception instanceof UnauthorizedHttpException) {
-            return Json::forbidden($exception->getMessage());
+            return $json->forbidden($exception->getMessage());
         } elseif ($exception instanceof AuthenticationException) {
-            return Json::unauthorized($exception->getMessage());
+            return $json->unauthorized($exception->getMessage());
         } elseif ($exception instanceof NotFoundHttpException) {
-            return Json::internalError('Route does not exist.');
+            return $json->internalError('Route does not exist.');
         } elseif ($exception instanceof MethodNotAllowedHttpException) {
-            return Json::internalError('Method not allowed on this route.');
+            return $json->internalError('Method not allowed on this route.');
         }
 
-        return Json::internalError($exception->getMessage());
+        return $json->internalError($exception->getMessage());
     }
 }
