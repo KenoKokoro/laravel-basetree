@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/KenoKokoro/laravel-basetree.svg?style=svg)](https://circleci.com/gh/KenoKokoro/laravel-basetree)
+
 ## Installation
 `composer require kenokokoro/laravel-basetree`
 
