@@ -112,7 +112,7 @@ class BaseResource implements ResourceScreen
         $model = $this->repository->create(array_only($attributes, $this->fillable));
 
         if ($this instanceof CreatedCallback) {
-            $this->created($model, array_except($attributes, $this->fillable), $attributes);
+            $this->created($model, $attributes, array_except($attributes, $this->fillable) ?? []);
         }
 
         /** @var EloquentModel $model */
@@ -135,8 +135,7 @@ class BaseResource implements ResourceScreen
         }
 
         if ($this instanceof UpdatedCallback) {
-            $dependencies = array_except($attributes, $this->fillable) ?? [];
-            $this->updated($old, $updated ?? null, $dependencies, $attributes);
+            $this->updated($old, $updated ?? null, $attributes, array_except($attributes, $this->fillable) ?? []);
         }
 
         /** @var EloquentModel $model */

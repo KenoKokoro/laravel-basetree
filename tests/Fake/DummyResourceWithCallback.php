@@ -15,16 +15,16 @@ class DummyResourceWithCallback extends BaseResource implements ResourceCallback
         parent::__construct($repository);
     }
 
-    public function created(BaseTreeModel $model, array $dependencyAttributes = [], array $attributes): void
+    public function created(BaseTreeModel $model, array $attributes, array $dependencyAttributes = []): void
     {
         $this->repository->update($model, ['fake' => 'value']);
     }
 
     public function updated(
         BaseTreeModel $before,
-        BaseTreeModel $updated = null,
-        array $dependencyAttributes = [],
-        array $attributes
+        ?BaseTreeModel $updated,
+        array $attributes,
+        array $dependencyAttributes = []
     ): void {
         $this->repository->update($before, ['fake' => 'value']);
     }
