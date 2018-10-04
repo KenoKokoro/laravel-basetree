@@ -7,6 +7,7 @@ namespace BaseTree\Tests\Integration;
 use BaseTree\Exception\Handler;
 use BaseTree\Testing\DatabaseTestCase;
 use BaseTree\Tests\Fake\Integration\DatabaseSeeder;
+use BaseTree\Tests\Fake\Integration\RouteServiceProvider;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Contracts\Debug\ExceptionHandler;
@@ -41,6 +42,7 @@ class IntegrationTestCase extends DatabaseTestCase
         $app->make(Hasher::class)->setRounds(4);
 
         $app->singleton(ExceptionHandler::class, Handler::class);
+        $app->register(RouteServiceProvider::class);
         $this->setDatabase($app);
 
         return $app;
@@ -53,13 +55,6 @@ class IntegrationTestCase extends DatabaseTestCase
     protected function getSeederClassName(): string
     {
         return DatabaseSeeder::class;
-    }
-
-    protected function setRoute(array $httpMethods, string $uri, string $controllerAction): void
-    {
-        $this->request->setRouteResolver(function() use ($httpMethods, $uri, $controllerAction) {
-            return new LaravelRoute($httpMethods, $uri, ['controller' => $controllerAction]);
-        });
     }
 
     /**
