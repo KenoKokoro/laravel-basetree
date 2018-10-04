@@ -28,7 +28,7 @@ interface ResourceScreen
 
     /**
      * @param integer $id
-     * @param array $relations
+     * @param array   $relations
      * @throws ModelNotFoundException
      * @return BaseTreeModel
      */
@@ -49,20 +49,20 @@ interface ResourceScreen
 
     /**
      * @param BaseTreeModel $model
-     * @param array $attributes
+     * @param array         $attributes
      * @return BaseTreeModel|Builder
      */
     public function updateEntity(BaseTreeModel $model, array $attributes);
 
     /**
      * @param BaseTreeModel $model
-     * @param array $attributes
+     * @param array         $attributes
      * @return boolean
      */
     public function destroy(BaseTreeModel $model, array $attributes = []): bool;
 
     /**
-     * @param $id
+     * @param       $id
      * @param array $relations
      * @return Builder|BaseTreeModel
      */

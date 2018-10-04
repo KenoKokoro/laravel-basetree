@@ -11,9 +11,9 @@ interface CreatedCallback
     /**
      * Used as callback when entity is created
      * @param BaseTreeModel $model
-     * @param array $dependencyAttributes
-     * @param array $attributes
+     * @param array         $attributes
+     * @param array         $dependencyAttributes
      * @return void
      */
-    public function created(BaseTreeModel $model, array $dependencyAttributes = [], array $attributes): void;
+    public function created(BaseTreeModel $model, array $attributes, array $dependencyAttributes = []): void;
 }

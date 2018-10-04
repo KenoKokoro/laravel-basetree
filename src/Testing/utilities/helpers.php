@@ -5,12 +5,14 @@ use Illuminate\Database\Eloquent\Collection;
 
 if ( ! function_exists('create')) {
     /**
-     * @param string $class
+     * Wrapper for the factory to make a single instance or collection of instances from the laravel database factory
+     * and store it to the database
+     * @param string       $class
      * @param integer|null $quantity
-     * @param array $attributes
+     * @param array        $attributes
      * @return BaseTreeModel|Collection
      */
-    function create($class, $quantity = null, $attributes = [])
+    function create(string $class, $quantity = null, $attributes = [])
     {
         return factory($class, $quantity)->create($attributes);
     }
@@ -18,12 +20,13 @@ if ( ! function_exists('create')) {
 
 if ( ! function_exists('make')) {
     /**
-     * @param string $class
+     * Wrapper for the factory to make a single instance or collection of instances from the laravel database factory
+     * @param string       $class
      * @param integer|null $quantity
-     * @param array $attributes
+     * @param array        $attributes
      * @return BaseTreeModel|Collection
      */
-    function make($class, $quantity = null, $attributes = [])
+    function make(string $class, $quantity = null, $attributes = [])
     {
         return factory($class, $quantity)->make($attributes);
     }
