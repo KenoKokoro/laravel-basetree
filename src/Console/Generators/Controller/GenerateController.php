@@ -16,8 +16,8 @@ class GenerateController extends BaseGenerator
     protected $signature = "basetree:controller
                             {--" . self::OPTION_MODEL_PLURAL . "= : Plural form of the model name. For instance if the model is User, you should send here Users}
                             {--" . self::OPTION_BLL . "= : Fully qualified business logic layer name including namespace}
-                            {--" . parent::OPTION_FOLDER . "=app/Http/Controllers/Api/ : Folder where to create the controller}
-                            {--" . parent::OPTION_NAMESPACE . "=App\Http\Controllers\Api : Namespace to create the controller under}";
+                            {--" . parent::OPTION_FOLDER . "=app/Http/Controllers/ : Folder where to create the controller}
+                            {--" . parent::OPTION_NAMESPACE . "=App\Http\Controllers : Namespace to create the controller under}";
 
     protected $description = "Generate Business Logic Layer class";
 
