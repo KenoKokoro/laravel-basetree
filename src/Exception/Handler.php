@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as LaravelHandler;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
-use Json;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
@@ -64,6 +63,7 @@ class Handler extends LaravelHandler
 
     protected function jsonException(Exception $exception)
     {
+        /** @var JsonResponse $json */
         $json = $this->container->make(JsonResponse::class);
 
         if ($exception instanceof ValidationException) {
@@ -79,9 +79,9 @@ class Handler extends LaravelHandler
         } elseif ($exception instanceof AuthenticationException) {
             return $json->unauthorized($exception->getMessage());
         } elseif ($exception instanceof NotFoundHttpException) {
-            return $json->internalError('Route does not exist.');
+            return $json->notFound('Route does not exist.');
         } elseif ($exception instanceof MethodNotAllowedHttpException) {
-            return $json->internalError('Method not allowed on this route.');
+            return $json->notAllowed('Method not allowed on this route.');
         }
 
         return $json->internalError($exception->getMessage());

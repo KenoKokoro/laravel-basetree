@@ -104,6 +104,21 @@ class JsonResponse extends LaravelJsonResponse
         return $this->parentInstance($response, parent::HTTP_INTERNAL_SERVER_ERROR);
     }
 
+    public function notAllowed(string $message)
+    {
+        if (empty($message)) {
+            $message = 'Method not allowed.';
+        }
+
+        $response = $this->getResponse($message);
+
+        if ( ! empty($append)) {
+            $response = array_merge($response, $append);
+        }
+
+        return $this->parentInstance($response, parent::HTTP_METHOD_NOT_ALLOWED);
+    }
+
     private function getResponse(string $message): array
     {
         return [

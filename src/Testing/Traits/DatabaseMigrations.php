@@ -4,16 +4,17 @@
 namespace BaseTree\Testing\Traits;
 
 
-use Illuminate\Contracts\Console\Kernel;
 use BaseTree\Testing\DatabaseTestCase;
+use Illuminate\Contracts\Console\Kernel;
 
 trait DatabaseMigrations
 {
     public function runDatabaseMigrations()
     {
         $this->artisan('migrate', ['--seed' => true]);
+        $this->artisan('db:seed', ['--class' => $this->getSeederClassName()]);
         $this->app[Kernel::class]->setArtisan(null);
-        $this->beforeApplicationDestroyed(function () {
+        $this->beforeApplicationDestroyed(function() {
             $this->artisan('migrate:rollback');
         });
     }
@@ -26,5 +27,10 @@ trait DatabaseMigrations
         }
 
         parent::setUpTraits();
+    }
+
+    protected function getSeederClassName(): string
+    {
+        return 'DatabaseSeeder';
     }
 }

@@ -5,10 +5,10 @@ namespace BaseTree\Tests\Unit\Controllers;
 
 
 use BaseTree\Controllers\WebController;
-use BaseTree\Tests\Fake\DummyModel;
-use BaseTree\Tests\Fake\DummyResource;
-use BaseTree\Tests\Fake\DummyResourceWithValidationsRules;
-use BaseTree\Tests\Fake\DummyWebController;
+use BaseTree\Tests\Fake\Unit\DummyModel;
+use BaseTree\Tests\Fake\Unit\DummyResource;
+use BaseTree\Tests\Fake\Unit\DummyResourceWithValidationsRules;
+use BaseTree\Tests\Fake\Unit\DummyWebController;
 use BaseTree\Tests\Unit\TestCase;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route as LaravelRoute;
