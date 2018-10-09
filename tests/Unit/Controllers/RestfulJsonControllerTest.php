@@ -5,9 +5,9 @@ namespace BaseTree\Tests\Unit\Controllers;
 
 
 use BaseTree\Controllers\RestfulJsonController;
-use BaseTree\Tests\Fake\DummyModel;
-use BaseTree\Tests\Fake\DummyResource;
-use BaseTree\Tests\Fake\DummyResourceWithValidationsRules;
+use BaseTree\Tests\Fake\Unit\DummyModel;
+use BaseTree\Tests\Fake\Unit\DummyResource;
+use BaseTree\Tests\Fake\Unit\DummyResourceWithValidationsRules;
 use BaseTree\Tests\Unit\TestCase;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;

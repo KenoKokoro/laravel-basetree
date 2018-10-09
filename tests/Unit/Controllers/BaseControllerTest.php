@@ -7,7 +7,7 @@ namespace BaseTree\Tests\Unit\Controllers;
 use BaseTree\Controllers\BaseController;
 use BaseTree\Responses\HttpResponse;
 use BaseTree\Responses\JsonResponse;
-use BaseTree\Tests\Fake\DummyModel;
+use BaseTree\Tests\Fake\Unit\DummyModel;
 use BaseTree\Tests\Fake\Wrappers\BaseControllerTestWrapper;
 use BaseTree\Tests\Unit\TestCase;
 use Illuminate\Routing\Route;

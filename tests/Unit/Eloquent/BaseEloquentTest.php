@@ -5,9 +5,9 @@ namespace BaseTree\Tests\Unit\Eloquent;
 
 
 use BaseTree\Eloquent\BaseEloquent;
-use BaseTree\Tests\Fake\DummyModel;
-use BaseTree\Tests\Fake\EloquentDummy;
-use BaseTree\Tests\Fake\EloquentDummyWithConstraints;
+use BaseTree\Tests\Fake\Unit\DummyModel;
+use BaseTree\Tests\Fake\Unit\EloquentDummy;
+use BaseTree\Tests\Fake\Unit\EloquentDummyWithConstraints;
 use BaseTree\Tests\Unit\TestCase;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;

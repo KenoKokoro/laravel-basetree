@@ -5,7 +5,7 @@ namespace BaseTree\Tests\Unit\Exception;
 
 
 use BaseTree\Exception\Handler;
-use BaseTree\Tests\Fake\DummyModel;
+use BaseTree\Tests\Fake\Unit\DummyModel;
 use BaseTree\Tests\Unit\TestCase;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;

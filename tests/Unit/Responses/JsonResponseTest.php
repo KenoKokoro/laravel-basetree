@@ -6,7 +6,7 @@ namespace BaseTree\Tests\Unit\Responses;
 
 use BaseTree\Providers\BaseTreeServiceProvider;
 use BaseTree\Responses\JsonResponse;
-use BaseTree\Tests\Fake\ClientLoggerStub;
+use BaseTree\Tests\Fake\Unit\ClientLoggerStub;
 use BaseTree\Tests\Unit\TestCase;
 use Illuminate\Http\JsonResponse as LaravelJsonResponse;
 use Illuminate\Support\Facades\App;

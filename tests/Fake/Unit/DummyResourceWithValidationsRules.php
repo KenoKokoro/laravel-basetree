@@ -1,7 +1,7 @@
 <?php
 
 
-namespace BaseTree\Tests\Fake;
+namespace BaseTree\Tests\Fake\Unit;
 
 
 use BaseTree\Resources\BaseResource;
