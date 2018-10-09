@@ -15,5 +15,7 @@ class RouteServiceProvider extends LaravelRouteServiceProvider
         $router = $this->app->make(Router::class);
 
         // Define stub routes here
+        $router->get('get-route-no-action', 'MissingController@index');
+        $router->apiResource('users', UsersController::class);
     }
 }
