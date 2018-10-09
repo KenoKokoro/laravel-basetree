@@ -7,14 +7,16 @@ namespace BaseTree\Tests\Integration;
 use BaseTree\Exception\Handler;
 use BaseTree\Testing\DatabaseTestCase;
 use BaseTree\Tests\Fake\Integration\DatabaseSeeder;
+use BaseTree\Tests\Fake\Integration\EloquentUser;
 use BaseTree\Tests\Fake\Integration\RouteServiceProvider;
+use BaseTree\Tests\Fake\Integration\UserRepository;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Route as LaravelRoute;
+use Yajra\DataTables\DataTablesServiceProvider;
 
 class IntegrationTestCase extends DatabaseTestCase
 {
@@ -43,6 +45,8 @@ class IntegrationTestCase extends DatabaseTestCase
 
         $app->singleton(ExceptionHandler::class, Handler::class);
         $app->register(RouteServiceProvider::class);
+        $app->register(DataTablesServiceProvider::class);
+        $app->bind(UserRepository::class, EloquentUser::class);
         $this->setDatabase($app);
 
         return $app;
