@@ -16,10 +16,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Foundation\Testing\TestCase;
 use Mockery as m;
 
-class DatabaseTestCase extends TestCase
+trait BaseDatabaseMethods
 {
     use CreatesApplication, DatabaseMigrations, HelperMethods, FieldValidationMessages;
 

@@ -4,7 +4,7 @@
 namespace BaseTree\Tests\Unit\Controllers;
 
 
-use BaseTree\Controllers\WebController;
+use BaseTree\Controllers\Laravel\WebController;
 use BaseTree\Tests\Fake\Unit\DummyModel;
 use BaseTree\Tests\Fake\Unit\DummyResource;
 use BaseTree\Tests\Fake\Unit\DummyResourceWithValidationsRules;

@@ -4,7 +4,7 @@
 namespace BaseTree\Tests\Fake\Unit;
 
 
-use BaseTree\Controllers\WebController;
+use BaseTree\Controllers\Laravel\WebController;
 
 class DummyWebController extends WebController
 {

@@ -12,8 +12,11 @@
         <testsuite name="Unit">
             <directory suffix="Test.php">./tests/Unit</directory>
         </testsuite>
-        <testsuite name="Integration">
-            <directory suffix="Test.php">./tests/Integration</directory>
+        <testsuite name="Laravel">
+            <directory suffix="Test.php">./tests/Integration/Laravel</directory>
+        </testsuite>
+        <testsuite name="Lumen">
+            <directory suffix="Test.php">./tests/Integration/Lumen</directory>
         </testsuite>
     </testsuites>
     <filter>

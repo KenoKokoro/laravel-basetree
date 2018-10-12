@@ -4,7 +4,7 @@
 namespace BaseTree\Tests\Unit\Controllers;
 
 
-use BaseTree\Controllers\RestfulJsonController;
+use BaseTree\Controllers\Laravel\JsonController;
 use BaseTree\Tests\Fake\Unit\DummyModel;
 use BaseTree\Tests\Fake\Unit\DummyResource;
 use BaseTree\Tests\Fake\Unit\DummyResourceWithValidationsRules;
@@ -19,7 +19,7 @@ use Mockery;
 /**
  * @property Mockery\MockInterface resourceMock
  */
-class RestfulJsonControllerTest extends TestCase
+class LaravelJsonControllerTest extends TestCase
 {
     public function setUp()
     {
@@ -230,19 +230,19 @@ class RestfulJsonControllerTest extends TestCase
         string $method,
         string $resource = DummyResource::class,
         Request $request = null
-    ): RestfulJsonController {
+    ): JsonController {
 
         if (is_null($request)) {
             $request = $this->request;
             $request->setRouteResolver(function() use ($method) {
-                return new LaravelRoute([], '', ['controller' => RestfulJsonController::class . "@{$method}"]);
+                return new LaravelRoute([], '', ['controller' => JsonController::class . "@{$method}"]);
             });
         }
 
         $this->resourceMock = Mockery::mock($resource);
         $this->resourceMock->shouldReceive('setRequestOperations')->with($request)->andReturnSelf();
 
-        return new RestfulJsonController($this->resourceMock);
+        return new JsonController($this->resourceMock);
     }
 
     protected function arrayResponse(
