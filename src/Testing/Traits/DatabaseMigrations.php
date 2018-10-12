@@ -4,7 +4,7 @@
 namespace BaseTree\Testing\Traits;
 
 
-use BaseTree\Testing\DatabaseTestCase;
+use BaseTree\Testing\LaravelDatabaseTestCase;
 use Illuminate\Contracts\Console\Kernel;
 
 trait DatabaseMigrations
@@ -13,7 +13,7 @@ trait DatabaseMigrations
     {
         $this->artisan('migrate', ['--seed' => true]);
         $this->artisan('db:seed', ['--class' => $this->getSeederClassName()]);
-        $this->app[Kernel::class]->setArtisan(null);
+//        $this->app[Kernel::class]->setArtisan(null);
         $this->beforeApplicationDestroyed(function() {
             $this->artisan('migrate:rollback');
         });
@@ -21,7 +21,7 @@ trait DatabaseMigrations
 
     protected function setUpTraits()
     {
-        $uses = array_flip(class_uses_recursive(DatabaseTestCase::class));
+        $uses = array_flip(class_uses_recursive(LaravelDatabaseTestCase::class));
         if (isset($uses[DatabaseMigrations::class])) {
             $this->runDatabaseMigrations();
         }

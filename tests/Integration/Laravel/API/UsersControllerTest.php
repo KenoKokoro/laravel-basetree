@@ -1,13 +1,13 @@
 <?php
 
 
-namespace BaseTree\Tests\Integration\API;
+namespace BaseTree\Tests\Integration\Laravel\API;
 
 
 use BaseTree\Responses\JsonResponse;
-use BaseTree\Tests\Integration\IntegrationTestCase;
+use BaseTree\Tests\Integration\LaravelTestCase;
 
-class UsersControllerTest extends IntegrationTestCase
+class UsersControllerTest extends LaravelTestCase
 {
     /** @test */
     public function it_should_return_all_records_for_the_users_endpoint(): void

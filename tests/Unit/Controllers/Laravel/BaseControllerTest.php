@@ -1,46 +1,26 @@
 <?php
 
 
-namespace BaseTree\Tests\Unit\Controllers;
+namespace BaseTree\Tests\Unit\Controllers\Laravel;
 
 
-use BaseTree\Controllers\BaseController;
-use BaseTree\Responses\HttpResponse;
-use BaseTree\Responses\JsonResponse;
+use BaseTree\Controllers\Laravel\BaseController;
 use BaseTree\Tests\Fake\Unit\DummyModel;
-use BaseTree\Tests\Fake\Wrappers\BaseControllerTestWrapper;
+use BaseTree\Tests\Fake\Wrappers\BaseControllerWrapper;
 use BaseTree\Tests\Unit\TestCase;
 use Illuminate\Routing\Route;
 
 class BaseControllerTest extends TestCase
 {
     /**
-     * @var BaseControllerTestWrapper
+     * @var BaseControllerWrapper
      */
     protected $controller;
 
     public function setUp()
     {
         parent::setUp();
-        $this->controller = new BaseControllerTestWrapper;
-    }
-
-    /** @test */
-    public function response_should_be_json_if_requested(): void
-    {
-        $this->request->headers->set('accept', ['application/json']);
-
-        $response = $this->controller->testResponse();
-
-        $this->assertInstanceOf(JsonResponse::class, $response);
-    }
-
-    /** @test */
-    public function default_response_should_be_http_response(): void
-    {
-        $response = $this->controller->testResponse();
-
-        $this->assertInstanceOf(HttpResponse::class, $response);
+        $this->controller = new BaseControllerWrapper;
     }
 
     /**

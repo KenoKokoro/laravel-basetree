@@ -1,13 +1,13 @@
 <?php
 
 
-namespace BaseTree\Tests\Fake\Integration;
+namespace BaseTree\Tests\Fake\Integration\Laravel;
 
 
-use Illuminate\Foundation\Support\Providers\RouteServiceProvider as LaravelRouteServiceProvider;
+use Illuminate\Foundation\Support\Providers\RouteServiceProvider as IlluminateRouteServiceProvider;
 use Illuminate\Routing\Router;
 
-class RouteServiceProvider extends LaravelRouteServiceProvider
+class RouteServiceProvider extends IlluminateRouteServiceProvider
 {
     public function map()
     {

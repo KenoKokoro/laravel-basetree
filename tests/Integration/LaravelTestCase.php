@@ -5,10 +5,10 @@ namespace BaseTree\Tests\Integration;
 
 
 use BaseTree\Exception\Handler;
-use BaseTree\Testing\DatabaseTestCase;
+use BaseTree\Testing\LaravelDatabaseTestCase;
 use BaseTree\Tests\Fake\Integration\DatabaseSeeder;
 use BaseTree\Tests\Fake\Integration\EloquentUser;
-use BaseTree\Tests\Fake\Integration\RouteServiceProvider;
+use BaseTree\Tests\Fake\Integration\Laravel\RouteServiceProvider;
 use BaseTree\Tests\Fake\Integration\UserRepository;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Illuminate\Contracts\Console\Kernel;
@@ -18,7 +18,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTablesServiceProvider;
 
-class IntegrationTestCase extends DatabaseTestCase
+class LaravelTestCase extends LaravelDatabaseTestCase
 {
     /**
      * @var Request
@@ -42,6 +42,7 @@ class IntegrationTestCase extends DatabaseTestCase
 
         $app->make(Kernel::class)->bootstrap();
         $app->make(Hasher::class)->setRounds(4);
+        $app->make(Kernel::class)->call('app:name', ['name' => 'Laravel']);
 
         $app->singleton(ExceptionHandler::class, Handler::class);
         $app->register(RouteServiceProvider::class);
@@ -58,6 +59,8 @@ class IntegrationTestCase extends DatabaseTestCase
      */
     protected function getSeederClassName(): string
     {
+        DatabaseSeeder::$isLaravel = true;
+
         return DatabaseSeeder::class;
     }
 

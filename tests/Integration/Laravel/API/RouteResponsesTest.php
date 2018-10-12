@@ -1,13 +1,13 @@
 <?php
 
 
-namespace BaseTree\Tests\Integration\API;
+namespace BaseTree\Tests\Integration\Laravel\API;
 
 
 use BaseTree\Responses\JsonResponse;
-use BaseTree\Tests\Integration\IntegrationTestCase;
+use BaseTree\Tests\Integration\LaravelTestCase;
 
-class RouteResponsesTest extends IntegrationTestCase
+class RouteResponsesTest extends LaravelTestCase
 {
     /** @test */
     public function not_defined_route_should_return_not_found_response(): void

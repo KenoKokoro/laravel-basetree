@@ -1,7 +1,7 @@
 <?php
 
 
-namespace BaseTree\Controllers;
+namespace BaseTree\Controllers\Laravel;
 
 
 use BaseTree\Resources\Contracts\ResourceCallbacks;
@@ -10,9 +10,9 @@ use BaseTree\Resources\Contracts\ResourceValidations;
 use BaseTree\Resources\Contracts\Validations\DestroyValidation;
 use BaseTree\Resources\Contracts\Validations\StoreValidation;
 use BaseTree\Resources\Contracts\Validations\UpdateValidation;
+use BaseTree\Responses\HttpResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use URL;
 
 class WebController extends BaseController
 {
@@ -106,5 +106,10 @@ class WebController extends BaseController
         DB::commit();
 
         return $this->response()->success($this->redirectTo, 'Successfully deleted.');
+    }
+
+    protected function response(): HttpResponse
+    {
+        return new HttpResponse();
     }
 }
