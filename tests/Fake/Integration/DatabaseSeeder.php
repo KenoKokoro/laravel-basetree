@@ -8,20 +8,14 @@ use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    public static $isLaravel = false;
+    public static $isLaravel = true;
 
-    public static $isLumen = false;
-
-    public function run()
+    public function run(): void
     {
-        $class = '';
+        $class = \App\User::class;
 
         if (static::$isLaravel === true) {
             $class = \Laravel\User::class;
-        }
-
-        if (static::$isLumen === true) {
-            $class = \App\User::class;
         }
 
         create($class, 15);

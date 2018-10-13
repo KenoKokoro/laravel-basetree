@@ -14,7 +14,6 @@ class RouteResponsesTest extends LumenTestCase
     {
         $response = $this->jsonGet('missing-route');
         $response->assertResponseStatus(JsonResponse::HTTP_NOT_FOUND);
-//        $this->assertEquals('Route does not exist.', $response->json('message'));
     }
 
     /** @test */
@@ -22,7 +21,6 @@ class RouteResponsesTest extends LumenTestCase
     {
         $response = $this->jsonPost('get-route-no-action');
         $response->assertResponseStatus(JsonResponse::HTTP_METHOD_NOT_ALLOWED);
-//        $this->assertEquals('Method not allowed on this route.', $response->json('message'));
     }
 
     /** @test */
@@ -30,6 +28,5 @@ class RouteResponsesTest extends LumenTestCase
     {
         $response = $this->jsonGet('get-route-no-action');
         $response->assertResponseStatus(JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
-//        $this->assertEquals('Class MissingController does not exist', $response->json('message'));
     }
 }

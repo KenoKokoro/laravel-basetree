@@ -4,7 +4,7 @@
 namespace BaseTree\Tests\Integration;
 
 
-use BaseTree\Exception\Handler;
+use BaseTree\Exception\LumenHandler;
 use BaseTree\Testing\LumenDatabaseTestCase;
 use BaseTree\Tests\Fake\Integration\DatabaseSeeder;
 use BaseTree\Tests\Fake\Integration\EloquentUser;
@@ -39,12 +39,9 @@ class LumenTestCase extends LumenDatabaseTestCase
      */
     public function createApplication()
     {
+        DatabaseSeeder::$isLaravel = false;
         $app = $this->buildApp();
 
-        $app->singleton(ExceptionHandler::class, Handler::class);
-
-        $app->instance('path.config', app()->basePath() . DIRECTORY_SEPARATOR . 'config');
-        $app->instance('path.storage', app()->basePath() . DIRECTORY_SEPARATOR . 'storage');
         $app->bind(UserRepository::class, EloquentUser::class);
         $this->setDatabase($app);
         $this->setRoutes($app);
@@ -58,8 +55,6 @@ class LumenTestCase extends LumenDatabaseTestCase
      */
     protected function getSeederClassName(): string
     {
-        DatabaseSeeder::$isLumen = true;
-
         return DatabaseSeeder::class;
     }
 
@@ -76,7 +71,9 @@ class LumenTestCase extends LumenDatabaseTestCase
         }
 
         $app = new Application(realpath(__DIR__ . '/../../vendor/laravel/lumen/'));
-        $app->singleton(ExceptionHandler::class, Handler::class);
+        $app->instance('path.config', app()->basePath() . DIRECTORY_SEPARATOR . 'config');
+        $app->instance('path.storage', app()->basePath() . DIRECTORY_SEPARATOR . 'storage');
+        $app->singleton(ExceptionHandler::class, LumenHandler::class);
         $app->singleton(Kernel::class, ConsoleKernel::class);
         $app->withFacades(false, []);
 

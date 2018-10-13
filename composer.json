@@ -24,7 +24,8 @@
                 "vendor/laravel/lumen/tests/"
             ],
             "BaseTree\\Tests\\": "tests/",
-            "Laravel\\": "vendor/laravel/laravel/app/"
+            "Laravel\\": "vendor/laravel/laravel/app/",
+            "App\\": "vendor/laravel/lumen/app/"
         }
     },
     "require": {
