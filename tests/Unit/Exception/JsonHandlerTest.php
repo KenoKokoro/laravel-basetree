@@ -4,7 +4,7 @@
 namespace BaseTree\Tests\Unit\Exception;
 
 
-use BaseTree\Exception\Handler;
+use BaseTree\Exception\LaravelHandler;
 use BaseTree\Tests\Fake\Unit\DummyModel;
 use BaseTree\Tests\Unit\TestCase;
 use Exception;
@@ -21,7 +21,7 @@ use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 class JsonHandlerTest extends TestCase
 {
     /**
-     * @var Handler
+     * @var LaravelHandler
      */
     private $instance;
 
@@ -33,7 +33,7 @@ class JsonHandlerTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->instance = new Handler($this->app);
+        $this->instance = new LaravelHandler($this->app);
         $this->validator = $this->app->make(Validator::class);
         $this->request->headers->set('accept', ['application/json']);
     }

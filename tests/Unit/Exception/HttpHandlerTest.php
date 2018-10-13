@@ -4,7 +4,7 @@
 namespace BaseTree\Tests\Unit\Exception;
 
 
-use BaseTree\Exception\Handler;
+use BaseTree\Exception\LaravelHandler;
 use BaseTree\Tests\Fake\Unit\DummyModel;
 use BaseTree\Tests\Unit\TestCase;
 use Exception;
@@ -15,14 +15,14 @@ use Illuminate\Support\Facades\Log;
 class HttpHandlerTest extends TestCase
 {
     /**
-     * @var Handler
+     * @var LaravelHandler
      */
     private $instance;
 
     public function setUp()
     {
         parent::setUp();
-        $this->instance = new Handler($this->app);
+        $this->instance = new LaravelHandler($this->app);
     }
 
     /**

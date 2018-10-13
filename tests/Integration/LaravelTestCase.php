@@ -4,7 +4,7 @@
 namespace BaseTree\Tests\Integration;
 
 
-use BaseTree\Exception\Handler;
+use BaseTree\Exception\LaravelHandler;
 use BaseTree\Testing\LaravelDatabaseTestCase;
 use BaseTree\Tests\Fake\Integration\DatabaseSeeder;
 use BaseTree\Tests\Fake\Integration\EloquentUser;
@@ -37,14 +37,16 @@ class LaravelTestCase extends LaravelDatabaseTestCase
      */
     public function createApplication()
     {
+        DatabaseSeeder::$isLaravel = true;
+
         /** @var Application $app */
         $app = require __DIR__ . '/../../vendor/laravel/laravel/bootstrap/app.php';
 
         $app->make(Kernel::class)->bootstrap();
+        $app->singleton(ExceptionHandler::class, LaravelHandler::class);
+        $app->singleton(\Illuminate\Contracts\Http\Kernel::class, \Laravel\Http\Kernel::class);
         $app->make(Hasher::class)->setRounds(4);
-        $app->make(Kernel::class)->call('app:name', ['name' => 'Laravel']);
 
-        $app->singleton(ExceptionHandler::class, Handler::class);
         $app->register(RouteServiceProvider::class);
         $app->register(DataTablesServiceProvider::class);
         $app->bind(UserRepository::class, EloquentUser::class);
@@ -59,8 +61,6 @@ class LaravelTestCase extends LaravelDatabaseTestCase
      */
     protected function getSeederClassName(): string
     {
-        DatabaseSeeder::$isLaravel = true;
-
         return DatabaseSeeder::class;
     }
 
