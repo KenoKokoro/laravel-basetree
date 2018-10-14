@@ -5,12 +5,11 @@ namespace BaseTree\Controllers;
 
 
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 
 trait BaseControllerMethods
 {
-    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+    use AuthorizesRequests, ValidatesRequests;
 
     protected $permission;
 
@@ -29,7 +28,7 @@ trait BaseControllerMethods
      */
     protected function checkAccess(string $ability, string $key, ...$extra): void
     {
-        $method = request()->route()->getActionMethod();
+        $method = $this->getActionMethod(request());
         if (config('base-tree.authorization') and ! in_array($method, $this->excludedAuthorization)) {
             $this->authorize($ability, array_merge([$key, $this->permission], $extra));
         }

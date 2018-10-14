@@ -9,6 +9,7 @@ use BaseTree\Testing\LumenDatabaseTestCase;
 use BaseTree\Tests\Fake\Integration\DatabaseSeeder;
 use BaseTree\Tests\Fake\Integration\EloquentUser;
 use BaseTree\Tests\Fake\Integration\Lumen\ConsoleKernel;
+use BaseTree\Tests\Fake\Integration\Lumen\UsersController;
 use BaseTree\Tests\Fake\Integration\UserRepository;
 use Dotenv\Dotenv;
 use Dotenv\Exception\InvalidPathException;
@@ -19,6 +20,7 @@ use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 use Laravel\Lumen\Application;
+use Yajra\DataTables\DataTablesServiceProvider;
 
 class LumenTestCase extends LumenDatabaseTestCase
 {
@@ -75,6 +77,7 @@ class LumenTestCase extends LumenDatabaseTestCase
         $app->instance('path.storage', app()->basePath() . DIRECTORY_SEPARATOR . 'storage');
         $app->singleton(ExceptionHandler::class, LumenHandler::class);
         $app->singleton(Kernel::class, ConsoleKernel::class);
+        $app->register(DataTablesServiceProvider::class);
         $app->withFacades(false, []);
 
         return $app;
@@ -107,5 +110,6 @@ class LumenTestCase extends LumenDatabaseTestCase
     private function setRoutes(Application $application): void
     {
         $application->router->get('get-route-no-action', 'MissingController@index');
+        $application->router->get('users', UsersController::class . '@index');
     }
 }

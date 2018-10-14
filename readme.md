@@ -19,12 +19,14 @@ Basic multilayer structure which is basically meant for RESTful APIs and Web CRU
 separated in business logic layer and data access layer, which results in much cleaner code.
 
 ## Includes
-1. Error handling just by extension of the `BaseTree\Exception\Handler.php`
+1. Error handling just by extension of the `BaseTree\Exception\LaravelHandler.php` or `BaseTree\Exception\LumenHandler`
 2. Base controllers with required methods 
 
-    a.`BaseTree\Controller\RestfulJsonController.php` for RESTful APIs
+    a.`BaseTree\Controller\Laravel\JsonController.php` for RESTful APIs on Laravel framework
     
-    b.`BaseTree\Controller\WebController.php` for web based CRUD operations
+    b.`BaseTree\Controller\Lumen\JsonController.php` for RESTful APIs on Lumen framework
+    
+    c.`BaseTree\Controller\WebController.php` for web based CRUD operations on Laravel only
     
 3. Base resource which is basically a class dedicated for the business logic 
 on given Model `BaseTree\Resources\BaseResource.php`
@@ -35,7 +37,8 @@ Created models should implement this model.
 of the already used database calls. Every repository have own interface and implementation.
 7. Each database update is wrapped inside transaction, so if you don't receive your controllers response,
 and got an exception nothing will be persisted in the database. 
-8. `DatabaseTestCase` which contains a lot of helpers for integration testing using the PHPUnit framework.
+8. `LaravelTestCase` and `LumenTestCase` which contains a lot of helpers for integration testing using 
+the PHPUnit framework.
 
 ## Usage
 ### Requirements
@@ -164,17 +167,17 @@ you can keep you model resources. ([Automatic creation](#artisan-generators))
 
     The `$attributes` contains the `$fillable` attributes.
 
-4. Now the controller. Each controller should extend the `BaseTree\Controllers\RestfulJsonController` or 
-`BaseTree\Controllers\WebController` depending on your need. ([Automatic creation](#artisan-generators))
+4. Now the controller. Each controller should extend the `BaseTree\Controllers\Laravel\JsonController` for laravel
+ and `BaseTree\Controllers\Lumen\JsonController` for lumen when using json and `BaseTree\Controllers\Laravel\WebController` depending on your need. ([Automatic creation](#artisan-generators))
 
     In `app/Http/Controllers` (or inside somewhere else) create your `FoosController.php`.
     ```php
         namespace App\Http\Controllers;
         
-        use BaseTree\Controllers\RestfulJsonController;
+        use BaseTree\Controllers\Laravel\JsonController;
         use App\BLL\FooResource;
         
-        class FoosController extends RestfulJsonController 
+        class FoosController extends JsonController 
         {
             public function __construct(FooResource $resource) 
             {
@@ -186,6 +189,17 @@ you can keep you model resources. ([Automatic creation](#artisan-generators))
 5. Now you are ready for your route:
     ```php
         Route::resource('foos', 'FoosController')->except(['edit']);
+    ```
+    
+6. Using the exception handler from the base-tree. In your `App\Exceptions\Handler` do the following:
+    ```php
+        namespace App\Exceptions;
+
+        use BaseTree\Exception\LaravelHandler as BaseTreeHandler;
+
+        class Handler extends BaseTreeHandler
+        {
+        }
     ```
 
 ### Request - Response
@@ -219,19 +233,19 @@ This package contains database test class which can make your database required 
         ],
     ```
     This will give the ability for the `BaseTree\Tests\Traits\DatabaseMigrations` which is included inside
-    `BaseTree\Tests\DatabaseTestCase` to migrate and seed before your test start, and rollback after your 
-    test is finished. Like this you will always have fresh database.
+    `BaseTree\Tests\LaravelDatabaseTestCase` or `BaseTree\Tests\LumenDatabaseTestCase` to migrate and seed before your 
+    test start, and rollback after your test is finished. Like this you will always have fresh database.
 #### Testing models
-In `tests/Models` create `FooTest.php` which corresponds to your `Foo.php` Model. Let's asume that your
+In `tests/Models` create `FooTest.php` which corresponds to your `Foo.php` Model. Let's assume that your
 `Foo` model has one `Bar` model.
 ```php
     namespace Tests\Models;
 
     use App\Models\Foo;
     use App\Models\Bar;
-    use BaseTree\Tests\DatabaseRequiredTestCase;
+    use BaseTree\Tests\LaravelDatabaseTestCase;
 
-    class FooTest extends DatabaseRequiredTestCase
+    class FooTest extends LaravelDatabaseTestCase
     {
         /** @test */
         public function a_foo_has_one_bar()
@@ -255,14 +269,14 @@ After you create your `FoosController` which extends the `DatabaseTestCase` you 
     ...
     
     /** @test */
-    public function it_should_fetch_all_foos()
+    public function it_should_fetch_all_foos(): void
     {
         $response = $this->jsonGet(route("foos.index"));
         $response->assertStatus(JsonResponse::HTTP_OK)->assertJsonStructure(['status', 'message', 'data']);
     }
     
     /** @test */
-    public function it_requires_data_in_order_to_store_foo()
+    public function it_requires_data_in_order_to_store_foo(): void
     {
         $response = $this->jsonPost(route('foos.store'));
         $response->assertStatus(JsonResponse::HTTP_UNPROCESSABLE_ENTITY)->assertJsonStructure([
@@ -285,7 +299,7 @@ After you create your `FoosController` which extends the `DatabaseTestCase` you 
     }
     
     /** @test */
-    public function foo_can_be_stored()
+    public function foo_can_be_stored(): void
     {
         $response = $this->jsonPost(route('foos.store', ['name' => 'Foo Name']));
         $response->assertStatus(JsonResponse::HTTP_UNPROCESSABLE_ENTITY)->assertJsonStructure([
@@ -407,14 +421,70 @@ for the required variables to make the docker containers just work.
     to specify the `fastcgi_param HTTP_HOST` here, in order your application to redirect to your proxy url.
     - `DB_HOST=mariadb` # If you are using the docker mariadb instance, instead of your own already installed.
     
-    After all this is set up, you will have to run `docker-compose up -d` and wait for the build to finish. Check your containers
-    status by running `docker-compose ps`. You will have to see something like this:
+    After all this is set up, you will have to run `docker-compose -f docker-compose.yml -f qa.docker-compose.yml -f dev.docker-compose.yml up -d` 
+    and wait for the build to finish. Check your containers status by running `docker-compose ps`. You will have to see something like this:
     ```php
             Name               Command                          State               Ports                
     ---------------------------------------------------------------------------------------------------------------------------------------------------------------------
     tutorial_app_1         docker-php-entrypoint /sta ...       Up           443/tcp, 0.0.0.0:80->80/tcp, 9000/tcp
     tutorial_mariadb_1     docker-entrypoint.sh mysqld          Up           0.0.0.0:3307->3306/tcp               
     tutorial_phpmyadmin_1  /run.sh phpmyadmin                   Up           0.0.0.0:81->80/tcp 
+    ```
+    
+## Lumen support
+The same explanation about laravel applies for Lumen as well, and the behaviour should be equal for lumen and laravel.
+The special cases for lumen are:
+1. The lumen controller is not the same with the laravel controller
+
+    ```php
+        namespace App\Http\Controllers;
+        
+        use BaseTree\Controllers\Lumen\JsonController;
+        use App\BLL\FooResource;
+        
+        class FoosController extends JsonController 
+        {
+            public function __construct(FooResource $resource) 
+            {
+                parent::__construct($resource);
+            }
+        }
+    ```
+    
+6. Using the exception handler from the base-tree. In your `App\Exceptions\Handler` do the following:
+    ```php
+        namespace App\Exceptions;
+
+        use BaseTree\Exception\LumenHandler as BaseTreeHandler;
+
+        class Handler extends BaseTreeHandler
+        {
+        }
+    ```
+    
+2. Database required testing
+    In `tests/Models` create `FooTest.php` which corresponds to your `Foo.php` Model. Let's assume that your
+    `Foo` model has one `Bar` model.
+    ```php
+        namespace Tests\Models;
+
+        use App\Models\Foo;
+        use App\Models\Bar;
+        use BaseTree\Tests\LumenDatabaseTestCase;
+
+        class FooTest extends LumenDatabaseTestCase
+        {
+            /** @test */
+            public function a_foo_has_one_bar()
+            {
+                $foo = create(Foo::class);
+                $bar = create(Bar::class);
+
+                $foo->bar()->save($bar);
+
+                $this->assertHasOne($foo, $bar, 'bar', ['id' => $bar->id, 'foo_id' => $foo->id]);
+            }
+        }
     ```
 
 ## TODO:
@@ -423,6 +493,9 @@ for the required variables to make the docker containers just work.
 3. Wiki examples and explanations
 4. Include JWT support
 5. Add artisan single endpoint generator to wrap all generators at once
+
+## Tests:
+`make phpunit` To execute the tests
 
 ## License
 The BaseTree package is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT)

@@ -3,3 +3,5 @@ storage/
 composer.lock
 
 .idea
+
+tests/storage/
