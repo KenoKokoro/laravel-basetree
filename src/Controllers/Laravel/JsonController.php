@@ -8,10 +8,11 @@ use BaseTree\Controllers\BaseJsonMethods;
 use BaseTree\Resources\Contracts\ResourceCallbacks;
 use BaseTree\Resources\Contracts\ResourceScreen;
 use BaseTree\Resources\Contracts\ResourceValidations;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 
 class JsonController extends BaseController
 {
-    use BaseJsonMethods;
+    use BaseJsonMethods, DispatchesJobs;
 
     /**
      * @var ResourceScreen|ResourceValidations|ResourceCallbacks
