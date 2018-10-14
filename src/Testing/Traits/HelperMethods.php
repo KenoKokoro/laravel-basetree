@@ -13,7 +13,7 @@ trait HelperMethods
      * @param  string $uri
      * @param  array  $data
      * @param  array  $headers
-     * @return \Illuminate\Foundation\Testing\TestResponse| TestCase
+     * @return \Illuminate\Foundation\Testing\TestResponse|TestCase
      */
     public function jsonPost($uri, array $data = [], array $headers = [])
     {
@@ -37,7 +37,7 @@ trait HelperMethods
      * @param  string $uri
      * @param  array  $data
      * @param  array  $headers
-     * @return \Illuminate\Foundation\Testing\TestResponse| TestCase
+     * @return \Illuminate\Foundation\Testing\TestResponse|TestCase
      */
     public function jsonDestroy($uri, array $data = [], array $headers = [])
     {
@@ -49,7 +49,7 @@ trait HelperMethods
      * @param  string $uri
      * @param  array  $data
      * @param  array  $headers
-     * @return \Illuminate\Foundation\Testing\TestResponse| TestCase
+     * @return \Illuminate\Foundation\Testing\TestResponse|TestCase
      */
     public function jsonGet($uri, array $data = [], array $headers = [])
     {
