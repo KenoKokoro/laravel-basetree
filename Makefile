@@ -4,4 +4,4 @@ phpunit:
 	@echo "Running phpunit..."
 	@vendor/bin/phpunit
 	@echo "Cleanup..."
-	@run rm -rf ./tests/storage
+	@rm -rf ./tests/storage
