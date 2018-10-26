@@ -18,6 +18,7 @@ use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Laravel\Lumen\Application;
 use Yajra\DataTables\DataTablesServiceProvider;
@@ -45,7 +46,7 @@ class LumenTestCase extends LumenDatabaseTestCase
         $app = $this->buildApp();
 
         $app->bind(UserRepository::class, EloquentUser::class);
-        $this->setDatabase($app);
+        $this->setDatabase();
         $this->setRoutes($app);
 
         return $app;
@@ -73,8 +74,8 @@ class LumenTestCase extends LumenDatabaseTestCase
         }
 
         $app = new Application(realpath(__DIR__ . '/../../vendor/laravel/lumen/'));
-        $app->instance('path.config', app()->basePath() . DIRECTORY_SEPARATOR . 'config');
-        $app->instance('path.storage', app()->basePath() . DIRECTORY_SEPARATOR . 'storage');
+        $app->instance('path.config', $app->basePath() . DIRECTORY_SEPARATOR . 'config');
+        $app->instance('path.storage', $app->basePath() . DIRECTORY_SEPARATOR . 'storage');
         $app->singleton(ExceptionHandler::class, LumenHandler::class);
         $app->singleton(Kernel::class, ConsoleKernel::class);
         $app->register(DataTablesServiceProvider::class);
@@ -85,19 +86,10 @@ class LumenTestCase extends LumenDatabaseTestCase
 
     /**
      * Set the testing connection for the application
-     * @param Application $application
      */
-    private function setDatabase(Application $application): void
+    private function setDatabase(): void
     {
-        /** @var ConfigRepository $config */
-        $config = $application->make(ConfigRepository::class);
-        $config->set('database.connections.testing', [
-            'driver' => 'sqlite',
-            'database' => ":memory:",
-            'prefix' => '',
-        ]);
-
-        Schema::create('users', function(Blueprint $table) {
+        Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
 
             $table->string('name');
