@@ -9,8 +9,6 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 
 trait BaseControllerMethods
 {
-    use AuthorizesRequests, ValidatesRequests;
-
     protected $permission;
 
     /**
@@ -24,7 +22,6 @@ trait BaseControllerMethods
      * @param string $key
      * @param array  $extra
      * @return void
-     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     protected function checkAccess(string $ability, string $key, ...$extra): void
     {

@@ -23,11 +23,6 @@ class GenerateController extends BaseGenerator
 
     protected $stubPath = __DIR__ . '/';
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     protected function go()
     {
         $folder = $this->option(parent::OPTION_FOLDER);
