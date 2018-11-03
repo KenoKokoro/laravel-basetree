@@ -219,13 +219,4 @@ class JsonResponseTest extends TestCase
 
         $this->instance->success();
     }
-
-    /** @test */
-    public function json_facade_works(): void
-    {
-        $this->app->register(BaseTreeServiceProvider::class);
-        $response = \Json::success();
-
-        $this->assertInstanceOf(LaravelJsonResponse::class, $response);
-    }
 }

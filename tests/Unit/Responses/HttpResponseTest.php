@@ -72,14 +72,4 @@ class HttpResponseTest extends TestCase
         $this->app->register(BaseTreeServiceProvider::class);
         $this->assertInstanceOf(HttpResponse::class, $this->app->make('basetree.response.http'));
     }
-
-    /** @test */
-    public function http_facade_works(): void
-    {
-        $this->app->register(BaseTreeServiceProvider::class);
-        $response = \Http::success('/home');
-
-        $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertEquals('http://localhost/home', $response->getTargetUrl());
-    }
 }
