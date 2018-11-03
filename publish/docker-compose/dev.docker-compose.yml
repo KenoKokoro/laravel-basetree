@@ -3,3 +3,12 @@ services:
   app:
     volumes:
     - ~/.composer:/var/cache/nginx/.composer
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:4.7
+    hostname: myadmin
+    container_name: myadmin
+    links:
+    - mariadb:db
+    ports:
+    - ${PMA_PORT}:80
