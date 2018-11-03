@@ -1,43 +1,41 @@
 version: "3.3"
 services:
   app:
+    hostname: app
+    container_name: app
     working_dir: "${CONTAINER_ROOT}"
     build:
       context: docker
       dockerfile: local.Dockerfile
     links:
-      - mariadb
+    - mariadb
     volumes:
-      - .:${CONTAINER_ROOT}
-      - ./docker/${APP_ENV}/conf/supervisord.conf:/etc/supervisord.conf
-      - ./docker/${APP_ENV}/conf/nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./docker/${APP_ENV}/conf/nginx/default.conf:/etc/nginx/sites/application.conf
-      - ./docker/${APP_ENV}/scripts/start.sh:/start.sh
-      - ./docker/${APP_ENV}/conf/php:/usr/local/etc/php/conf
+    - .:${CONTAINER_ROOT}
+    - ./docker/${APP_ENV}/conf/supervisord.conf:/etc/supervisord.conf
+    - ./docker/${APP_ENV}/conf/nginx/nginx.conf:/etc/nginx/nginx.conf
+    - ./docker/${APP_ENV}/conf/nginx/default.conf:/etc/nginx/sites/application.conf
+    - ./docker/${APP_ENV}/scripts/start.sh:/start.sh
+    - ./docker/${APP_ENV}/conf/php:/usr/local/etc/php/conf
     ports:
-      - ${NGINX_PORT}:80
+    - ${NGINX_PORT}:80
     environment:
-      - WEBROOT=${CONTAINER_ROOT}/public
-      - ROOT=${CONTAINER_ROOT}
-      - REAL_IP_HEADER=1
-      - NGINX_SERVER_NAME=${NGINX_SERVER_NAME}
-      - PUID=${DOCKER_HOST_UID}
-      - PGID=${DOCKER_HOST_GID}
+    - WEBROOT=${CONTAINER_ROOT}/public
+    - ROOT=${CONTAINER_ROOT}
+    - REAL_IP_HEADER=1
+    - NGINX_SERVER_NAME=${NGINX_SERVER_NAME}
+    - PUID=${DOCKER_HOST_UID}
+    - PGID=${DOCKER_HOST_GID}
 
   # Services
   mariadb:
     image: mariadb:10.3
+    hostname: mariadb
+    container_name: mariadb
     volumes:
-      - ${DATABASE_LOCAL_STORAGE}:/var/lib/mysql:rw
+    - ${DATABASE_LOCAL_STORAGE}:/var/lib/mysql:rw
     environment:
-      - MYSQL_DATABASE=${DB_DATABASE}
-      - MYSQL_USER=${DB_USERNAME}
-      - MYSQL_PASSWORD=${DB_PASSWORD}
-      - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+    - MYSQL_DATABASE=${DB_DATABASE}
+    - MYSQL_USER=${DB_USERNAME}
+    - MYSQL_PASSWORD=${DB_PASSWORD}
+    - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
 
-  phpmyadmin:
-    image: phpmyadmin/phpmyadmin:4.7
-    links:
-      - mariadb:db
-    ports:
-      - ${PMA_PORT}:80
