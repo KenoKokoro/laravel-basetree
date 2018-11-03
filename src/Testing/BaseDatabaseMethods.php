@@ -225,7 +225,7 @@ trait BaseDatabaseMethods
      * @param $instance
      * @return m\MockInterface
      */
-    protected function mock($instance): m\MockInterface
+    protected function mockInstance($instance): m\MockInterface
     {
         $mock = m::mock($instance);
         app()->instance($instance, $mock);
