@@ -4,8 +4,8 @@
 namespace BaseTree\Console\Generators;
 
 
-use File;
 use Illuminate\Console\Command;
+use Illuminate\Filesystem\Filesystem;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 
 abstract class BaseGenerator extends Command
@@ -27,9 +27,15 @@ abstract class BaseGenerator extends Command
 
     protected $modifiers = [];
 
-    public function __construct()
+    /**
+     * @var Filesystem
+     */
+    private $file;
+
+    public function __construct(Filesystem $file)
     {
         parent::__construct();
+        $this->file = $file;
     }
 
     public function handle()
@@ -41,10 +47,11 @@ abstract class BaseGenerator extends Command
 
     protected function validateOptions()
     {
-        $options = array_except($this->options(), ['help', 'quiet', 'verbose', 'version', 'ansi', 'no-ansi', 'no-interaction', 'env']);
+        $options = array_except($this->options(),
+            ['help', 'quiet', 'verbose', 'version', 'ansi', 'no-ansi', 'no-interaction', 'env']);
 
-        foreach($options as $key => $value) {
-            if(empty($value)) {
+        foreach ($options as $key => $value) {
+            if (empty($value)) {
                 throw new InvalidArgumentException("Option --{$key} should not be empty");
             }
         }
@@ -85,19 +92,19 @@ abstract class BaseGenerator extends Command
     protected function writeFromStub(string $stubPath, string $folder, string $fileNameKey): string
     {
         $fileName = "{$folder}/{$this->modifiers[$fileNameKey]}.php";
-        if (File::exists($fileName)) {
+        if ($this->file->exists($fileName)) {
             $this->warn("{$fileName} is already created.");
 
             return '';
         }
 
-        $stubData = $this->modify(File::get($stubPath));
+        $stubData = $this->modify($this->file->get($stubPath));
 
-        if ( ! File::exists($folder)) {
-            File::makeDirectory($folder, 0775, true, true);
+        if ( ! $this->file->exists($folder)) {
+            $this->file->makeDirectory($folder, 0775, true, true);
         }
 
-        File::put($fileName, $stubData);
+        $this->file->put($fileName, $stubData);
 
         return $fileName;
     }

@@ -28,11 +28,6 @@ class GenerateDal extends BaseGenerator
 
     protected $stubPath = __DIR__ . '/';
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     protected function go()
     {
         $this->createInterface($this->option(self::OPTION_INTERFACE_FOLDER));
