@@ -35,7 +35,7 @@
         "illuminate/container": "^5.0",
         "illuminate/http": "^5.0",
         "illuminate/support": "^5.0",
-        "yajra/laravel-datatables-oracle": ">8.0"
+        "yajra/laravel-datatables-oracle": ">8"
     },
     "require-dev": {
         "fzaninotto/faker": "^1.4",
