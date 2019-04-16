@@ -44,8 +44,8 @@
         "mockery/mockery": "^1.0",
         "nunomaduro/collision": "^2.0",
         "phpunit/phpunit": "^7.0",
-        "laravel/laravel": "5.8.*",
-        "laravel/lumen": "5.8.*"
+        "laravel/laravel": "^5.0",
+        "laravel/lumen": "^5.0"
     },
     "extra": {
         "laravel": {
