@@ -1,5 +1,5 @@
 {
-    "name": "dackko/laravel-basetree",
+    "name": "scenoxshift/laravel-basetree",
     "description": "Initial base structure for extending while building laravel application",
     "type": "library",
     "license": "MIT",
