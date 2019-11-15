@@ -1,8 +1,6 @@
 <?php
 
-
 namespace [dal-namespace];
-
 
 use [model-namespace]\[model-name];
 use BaseTree\Eloquent\BaseEloquent;

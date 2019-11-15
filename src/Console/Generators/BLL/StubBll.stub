@@ -1,8 +1,6 @@
 <?php
 
-
 namespace [bll-namespace];
-
 
 use [dal-interface-namespace]\[dal-interface-name];
 use BaseTree\Resources\BaseResource;
