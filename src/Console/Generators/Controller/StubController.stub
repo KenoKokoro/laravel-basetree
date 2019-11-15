@@ -1,10 +1,8 @@
 <?php
 
-
 namespace [controller-namespace];
 
-
-use BaseTree\Controllers\RestfulJsonController;
+use BaseTree\Controllers\Laravel\RestfulJsonController;
 use [bll-namespace]\[bll-name];
 
 class [controller-name] extends RestfulJsonController
