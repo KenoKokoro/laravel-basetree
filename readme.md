@@ -1,5 +1,12 @@
 [![CircleCI](https://circleci.com/gh/KenoKokoro/laravel-basetree.svg?style=svg)](https://circleci.com/gh/KenoKokoro/laravel-basetree)
 
+## Support
+|Laravel      | Version       |
+|:------------|--------------:|
+|< 5.6        | 1.*           |
+|5.6,5.7,5.8  | 2.*           |
+|6.x          | 3.*           |
+
 ## Installation
 `composer require kenokokoro/laravel-basetree`
 
