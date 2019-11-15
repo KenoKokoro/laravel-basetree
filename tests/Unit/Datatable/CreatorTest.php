@@ -11,7 +11,7 @@ use Yajra\DataTables\DataTablesServiceProvider;
 
 class CreatorTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->app->register(DataTablesServiceProvider::class);

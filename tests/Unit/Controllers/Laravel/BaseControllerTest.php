@@ -1,13 +1,12 @@
 <?php
 
-
 namespace BaseTree\Tests\Unit\Controllers\Laravel;
-
 
 use BaseTree\Controllers\Laravel\BaseController;
 use BaseTree\Tests\Fake\Unit\DummyModel;
 use BaseTree\Tests\Fake\Wrappers\BaseControllerWrapper;
 use BaseTree\Tests\Unit\TestCase;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Routing\Route;
 
 class BaseControllerTest extends TestCase
@@ -17,7 +16,7 @@ class BaseControllerTest extends TestCase
      */
     protected $controller;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->controller = new BaseControllerWrapper;
@@ -25,10 +24,11 @@ class BaseControllerTest extends TestCase
 
     /**
      * @test
-     * @expectedException \Illuminate\Auth\Access\AuthorizationException
+     * @thros AuthorizationException
      */
     public function check_access_should_be_called_if_the_environment_variable_is_set(): void
     {
+        self::expectException(AuthorizationException::class);
         $this->config->set('base-tree.authorization', true);
         $this->request->setRouteResolver(function() {
             return new Route([], '', ['uses' => BaseController::class . "@index"]);

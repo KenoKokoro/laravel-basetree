@@ -1,16 +1,16 @@
 <?php
 
-
 namespace BaseTree\Tests\Unit\Eloquent;
 
-
 use BaseTree\Eloquent\BaseEloquent;
+use BaseTree\Eloquent\InvalidArgumentException;
 use BaseTree\Tests\Fake\Unit\DummyModel;
 use BaseTree\Tests\Fake\Unit\EloquentDummy;
 use BaseTree\Tests\Fake\Unit\EloquentDummyWithConstraints;
 use BaseTree\Tests\Unit\TestCase;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
@@ -24,10 +24,11 @@ class BaseEloquentTest extends TestCase
 {
     /**
      * @test
-     * @expectedException \BaseTree\Eloquent\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function find_by_constraints_should_throw_exception_if_constraints_are_empty(): void
     {
+        self::expectException(InvalidArgumentException::class);
         $this->eloquentInstance()->findByConstraints([]);
     }
 
@@ -70,10 +71,11 @@ class BaseEloquentTest extends TestCase
 
     /**
      * @test
-     * @expectedException \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws ModelNotFoundException
      */
-    public function find_or_fail_should_throw_exception_if_there_arent_matching_results(): void
+    public function find_or_fail_should_throw_exception_if_there_are_not_matching_results(): void
     {
+        self::expectException(ModelNotFoundException::class);
         $instance = $this->eloquentInstance();
 
         $this->model->shouldReceive('find')->with(1)->andReturn(null);

@@ -1,8 +1,6 @@
 <?php
 
-
 namespace BaseTree\Resources;
-
 
 use BaseTree\Datatable\Creator as DatatableCreator;
 use BaseTree\Eloquent\RepositoryInterface;
@@ -16,6 +14,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 
 class BaseResource implements ResourceScreen
 {
@@ -109,10 +108,10 @@ class BaseResource implements ResourceScreen
 
     public function store(array $attributes)
     {
-        $model = $this->repository->create(array_only($attributes, $this->fillable));
+        $model = $this->repository->create(Arr::only($attributes, $this->fillable));
 
         if ($this instanceof CreatedCallback) {
-            $this->created($model, $attributes, array_except($attributes, $this->fillable) ?? []);
+            $this->created($model, $attributes, Arr::except($attributes, $this->fillable) ?? []);
         }
 
         /** @var EloquentModel $model */
@@ -129,13 +128,13 @@ class BaseResource implements ResourceScreen
             }
         }
 
-        if ( ! empty($this->fillable)) {
-            $attributes = array_except($attributes, $this->excludedOnUpdate);
-            $updated = $this->repository->update($model, array_only($attributes, $this->fillable));
+        if (!empty($this->fillable)) {
+            $attributes = Arr::except($attributes, $this->excludedOnUpdate);
+            $updated = $this->repository->update($model, Arr::only($attributes, $this->fillable));
         }
 
         if ($this instanceof UpdatedCallback) {
-            $this->updated($old, $updated ?? null, $attributes, array_except($attributes, $this->fillable) ?? []);
+            $this->updated($old, $updated ?? null, $attributes, Arr::except($attributes, $this->fillable) ?? []);
         }
 
         /** @var EloquentModel $model */

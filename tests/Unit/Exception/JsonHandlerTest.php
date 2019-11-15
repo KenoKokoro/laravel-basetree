@@ -30,7 +30,7 @@ class JsonHandlerTest extends TestCase
      */
     private $validator;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->instance = new LaravelHandler($this->app);

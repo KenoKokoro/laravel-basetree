@@ -19,7 +19,7 @@ class JsonResponseTest extends TestCase
      */
     protected $instance;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->instance = new JsonResponse;
