@@ -25,7 +25,7 @@ class LaravelTestCase extends LaravelDatabaseTestCase
      */
     protected $request;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->request = $this->app->make(Request::class);
@@ -44,7 +44,7 @@ class LaravelTestCase extends LaravelDatabaseTestCase
 
         $app->make(Kernel::class)->bootstrap();
         $app->singleton(ExceptionHandler::class, LaravelHandler::class);
-        $app->singleton(\Illuminate\Contracts\Http\Kernel::class, \Laravel\Http\Kernel::class);
+        $app->singleton(\Illuminate\Contracts\Http\Kernel::class, \App\Http\Kernel::class);
         $app->make(Hasher::class)->setRounds(4);
 
         $app->register(RouteServiceProvider::class);

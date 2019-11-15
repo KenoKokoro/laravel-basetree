@@ -1,16 +1,16 @@
 FROM php:7.2.3-fpm-stretch
 
-MAINTAINER Jimmy <stefan.brankovik@cosmicdevelopment.com>
+MAINTAINER Jimmy <stefan.brankovik@gmail.com>
 
 ### NGINX
-ARG NGINX_VERSION=1.10.3-1+deb9u1
-ARG YARN_VERSION=1.10.1-1
+ARG NGINX_VERSION=1.10.3-1+deb9u3
+ARG YARN_VERSION=1.19.1-1
 
 RUN apt-get update && apt-get install -y --no-install-recommends apt-utils gnupg2 apt-transport-https
 ### Required repositories
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
     && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-RUN curl -sL https://deb.nodesource.com/setup_8.x | bash -
+RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
 
 ### NGINX
 RUN addgroup --system nginx \

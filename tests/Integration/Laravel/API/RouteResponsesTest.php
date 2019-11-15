@@ -1,8 +1,6 @@
 <?php
 
-
 namespace BaseTree\Tests\Integration\Laravel\API;
-
 
 use BaseTree\Responses\JsonResponse;
 use BaseTree\Tests\Integration\LaravelTestCase;
@@ -30,6 +28,6 @@ class RouteResponsesTest extends LaravelTestCase
     {
         $response = $this->jsonGet('get-route-no-action');
         $response->assertStatus(JsonResponse::HTTP_INTERNAL_SERVER_ERROR)->assertJsonStructure(['message']);
-        $this->assertEquals('Class MissingController does not exist', $response->json('message'));
+        $this->assertEquals('Target class [MissingController] does not exist.', $response->json('message'));
     }
 }

@@ -19,7 +19,7 @@ abstract class TestCase extends LaravelTestCase
      */
     protected $config;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->request = $this->app->make(Request::class);

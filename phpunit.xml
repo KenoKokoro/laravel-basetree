@@ -15,9 +15,6 @@
         <testsuite name="Laravel">
             <directory suffix="Test.php">./tests/Integration/Laravel</directory>
         </testsuite>
-        <testsuite name="Lumen">
-            <directory suffix="Test.php">./tests/Integration/Lumen</directory>
-        </testsuite>
     </testsuites>
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="true">

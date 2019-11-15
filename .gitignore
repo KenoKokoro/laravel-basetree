@@ -3,5 +3,7 @@ storage/
 composer.lock
 
 .idea
+publish/docker-compose/.env
 
 tests/storage/
+.phpunit.result.cache

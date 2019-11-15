@@ -4,6 +4,7 @@
 namespace BaseTree\Tests\Fake\Integration;
 
 
+use App\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -12,10 +13,8 @@ class DatabaseSeeder extends Seeder
 
     public function run(): void
     {
-        $class = \App\User::class;
-
         if (static::$isLaravel === true) {
-            $class = \Laravel\User::class;
+            $class = User::class;
         }
 
         create($class, 15);

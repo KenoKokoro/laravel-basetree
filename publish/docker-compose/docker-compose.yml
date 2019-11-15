@@ -7,8 +7,6 @@ services:
     build:
       context: docker
       dockerfile: local.Dockerfile
-    links:
-    - mariadb
     volumes:
     - .:${CONTAINER_ROOT}
     - ./docker/${APP_ENV}/conf/supervisord.conf:/etc/supervisord.conf
@@ -27,15 +25,15 @@ services:
     - PGID=${DOCKER_HOST_GID}
 
   # Services
-  mariadb:
-    image: mariadb:10.3
-    hostname: mariadb
-    container_name: mariadb
-    volumes:
-    - ${DATABASE_LOCAL_STORAGE}:/var/lib/mysql:rw
-    environment:
-    - MYSQL_DATABASE=${DB_DATABASE}
-    - MYSQL_USER=${DB_USERNAME}
-    - MYSQL_PASSWORD=${DB_PASSWORD}
-    - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
+#  mariadb:
+#    image: mariadb:10.3
+#    hostname: mariadb
+#    container_name: mariadb
+#    volumes:
+#    - ${DATABASE_LOCAL_STORAGE}:/var/lib/mysql:rw
+#    environment:
+#    - MYSQL_DATABASE=${DB_DATABASE}
+#    - MYSQL_USER=${DB_USERNAME}
+#    - MYSQL_PASSWORD=${DB_PASSWORD}
+#    - MYSQL_ROOT_PASSWORD=${DB_ROOT_PASSWORD}
 

@@ -19,7 +19,7 @@ class HttpHandlerTest extends TestCase
      */
     private $instance;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->instance = new LaravelHandler($this->app);

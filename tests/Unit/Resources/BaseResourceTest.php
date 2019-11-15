@@ -15,6 +15,7 @@ use BaseTree\Tests\Fake\Unit\EloquentDummy;
 use BaseTree\Tests\Unit\TestCase;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Mockery;
@@ -31,7 +32,7 @@ class BaseResourceTest extends TestCase
      */
     protected $instance;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->app->register(DataTablesServiceProvider::class);
@@ -87,10 +88,11 @@ class BaseResourceTest extends TestCase
 
     /**
      * @test
-     * @expectedException \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws ModelNotFoundException
      */
     public function find_without_relationships_should_fail_if_entry_does_not_exists(): void
     {
+        self::expectException(ModelNotFoundException::class);
         $instance = $this->resourceInstance();
         $this->model->shouldReceive('find')->with(1)->andReturn(null);
         $instance->findWithoutRelations(1);
@@ -108,10 +110,11 @@ class BaseResourceTest extends TestCase
 
     /**
      * @test
-     * @expectedException \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws ModelNotFoundException
      */
     public function find_with_relations_should_fail_if_entry_does_not_exist(): void
     {
+        self::expectException(ModelNotFoundException::class);
         $instance = $this->resourceInstance();
 
         $this->model->shouldReceive('find')->with(1)->andReturn(null);

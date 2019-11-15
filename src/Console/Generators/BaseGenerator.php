@@ -6,13 +6,13 @@ namespace BaseTree\Console\Generators;
 
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Arr;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 
 abstract class BaseGenerator extends Command
 {
     const OPTION_FOLDER = 'folder';
     const OPTION_NAMESPACE = 'namespace';
-    const OPTION_NAME = 'name';
 
     const KEY_MODEL_NAMESPACE = 'model-namespace';
     const KEY_MODEL_NAME = 'model-name';
@@ -47,7 +47,7 @@ abstract class BaseGenerator extends Command
 
     protected function validateOptions()
     {
-        $options = array_except($this->options(),
+        $options = Arr::except($this->options(),
             ['help', 'quiet', 'verbose', 'version', 'ansi', 'no-ansi', 'no-interaction', 'env']);
 
         foreach ($options as $key => $value) {

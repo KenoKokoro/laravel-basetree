@@ -12,8 +12,10 @@ use BaseTree\Tests\Fake\Unit\DummyWebController;
 use BaseTree\Tests\Unit\TestCase;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route as LaravelRoute;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\View;
+use Illuminate\Validation\ValidationException;
 use Mockery;
 
 /**
@@ -92,12 +94,10 @@ class WebControllerTest extends TestCase
         $this->assertEquals('http://localhost/dummies/index', $response->getTargetUrl());
     }
 
-    /**
-     * @test
-     * @expectedException \Illuminate\Validation\ValidationException
-     */
+    /** @test */
     public function web_store_should_throw_validation_exception_response_if_rules_does_not_match(): void
     {
+        self::expectException(ValidationException::class);
         $this->request->setMethod('POST');
         $this->request->request->set('name', 'Dummy');
         $instance = $this->controller('store', DummyResourceWithValidationsRules::class);
@@ -177,10 +177,10 @@ class WebControllerTest extends TestCase
 
     /**
      * @test
-     * @expectedException \Illuminate\Validation\ValidationException
      */
     public function web_update_should_throw_validation_exception_response_if_rules_does_not_match(): void
     {
+        self::expectException(ValidationException::class);
         $this->request->setMethod('POST');
         $this->request->request->set('name', 'Dummy');
         $instance = $this->controller('update', DummyResourceWithValidationsRules::class);
@@ -236,10 +236,10 @@ class WebControllerTest extends TestCase
 
     /**
      * @test
-     * @expectedException \Illuminate\Validation\ValidationException
      */
     public function web_destroy_should_throw_validation_exception_response_if_rules_does_not_match(): void
     {
+        self::expectException(ValidationException::class);
         $this->request->setMethod('DELETE');
         $this->request->request->set('name', 'Dummy');
         $instance = $this->controller('destroy', DummyResourceWithValidationsRules::class);
@@ -297,6 +297,6 @@ class WebControllerTest extends TestCase
         $session = session()->all();
         $this->assertEquals($session['status'], $status);
         $this->assertEquals($session['message'], $message);
-        $this->assertEquals(array_get($session, '_flash.new'), ['status', 'message']);
+        $this->assertEquals(Arr::get($session, '_flash.new'), ['status', 'message']);
     }
 }

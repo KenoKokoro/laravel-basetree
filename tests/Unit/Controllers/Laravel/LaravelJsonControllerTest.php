@@ -1,27 +1,28 @@
 <?php
 
-
 namespace BaseTree\Tests\Unit\Controllers;
-
 
 use BaseTree\Controllers\Laravel\JsonController;
 use BaseTree\Tests\Fake\Unit\DummyModel;
 use BaseTree\Tests\Fake\Unit\DummyResource;
 use BaseTree\Tests\Fake\Unit\DummyResourceWithValidationsRules;
 use BaseTree\Tests\Unit\TestCase;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Route as LaravelRoute;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 use Mockery;
+use Mockery\MockInterface;
 
 /**
- * @property Mockery\MockInterface resourceMock
+ * @property MockInterface resourceMock
  */
 class LaravelJsonControllerTest extends TestCase
 {
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->request->headers->set('accept', ['application/json']);
@@ -87,10 +88,12 @@ class LaravelJsonControllerTest extends TestCase
 
     /**
      * @test
-     * @expectedException \Illuminate\Validation\ValidationException
+     * @throws ValidationException
+     * @throws AuthorizationException
      */
     public function store_should_throw_validation_exception_response_if_rules_does_not_match(): void
     {
+        self::expectException(ValidationException::class);
         $this->request->setMethod('POST');
         $this->request->request->set('name', 'Dummy');
         $instance = $this->controller('store', DummyResourceWithValidationsRules::class);
@@ -139,10 +142,12 @@ class LaravelJsonControllerTest extends TestCase
 
     /**
      * @test
-     * @expectedException \Illuminate\Validation\ValidationException
+     * @throws ValidationException
+     * @throws AuthorizationException
      */
     public function update_should_throw_validation_exception_response_if_rules_does_not_match(): void
     {
+        self::expectException(ValidationException::class);
         $this->request->setMethod('POST');
         $this->request->request->set('name', 'Dummy');
         $instance = $this->controller('update', DummyResourceWithValidationsRules::class);
@@ -192,10 +197,12 @@ class LaravelJsonControllerTest extends TestCase
 
     /**
      * @test
-     * @expectedException \Illuminate\Validation\ValidationException
+     * @throws ValidationException
+     * @throws AuthorizationException
      */
     public function destroy_should_throw_validation_exception_response_if_rules_does_not_match(): void
     {
+        self::expectException(ValidationException::class);
         $this->request->setMethod('DELETE');
         $this->request->request->set('name', 'Dummy');
         $instance = $this->controller('destroy', DummyResourceWithValidationsRules::class);
