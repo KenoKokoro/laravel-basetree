@@ -1,8 +1,6 @@
 <?php
 
-
 namespace BaseTree\Testing;
-
 
 use BaseTree\Models\BaseTreeModel;
 use BaseTree\Testing\Traits\Assertions\FieldValidationMessages;
@@ -39,45 +37,48 @@ trait BaseDatabaseMethods
      * Assert that the model is created and exists in the db
      * @param BaseTreeModel|string $model table string or instance
      * @param array                $attrs
+     * @param null                 $connection
      */
-    protected function assertCreated($model, array $attrs): void
+    protected function assertCreated($model, array $attrs, $connection = null): void
     {
-        if ( ! is_a($model, BaseTreeModel::class)) {
-            $this->assertDatabaseHas($model, $attrs);
+        if (!is_a($model, BaseTreeModel::class)) {
+            $this->assertDatabaseHas($model, $attrs, $connection);
 
             return;
         }
         /** @var BaseTreeModel $model */
-        $this->assertDatabaseHas($model->getTable(), $attrs);
+        $this->assertDatabaseHas($model->getTable(), $attrs, $connection);
     }
 
     /**
      * Assert that the model is deleted and missing from db
      * @param BaseTreeModel|string $model table string or instance
      * @param array                $attrs
+     * @param null                 $connection
      */
-    protected function assertDeleted($model, array $attrs): void
+    protected function assertDeleted($model, array $attrs = [], $connection = null): void
     {
-        if ( ! is_a($model, BaseTreeModel::class)) {
-            $this->assertDatabaseMissing($model, $attrs);
+        if (!is_a($model, BaseTreeModel::class)) {
+            $this->assertDatabaseMissing($model, $attrs, $connection);
 
             return;
         }
         /** @var BaseTreeModel $model */
         $model->delete();
-        $this->assertDatabaseMissing($model->getTable(), $attrs);
+        $this->assertDatabaseMissing($model->getTable(), $attrs, $connection);
     }
 
     /**
      * Assert that the model will change the attributes after the update
-     * @param BaseTreeModel|string $model table string or instance
+     * @param BaseTreeModel|string $model       table string or instance
      * @param array                $attrs
      * @param array                $updateAttrs The attributes that should be asserted on
+     * @param null                 $connection
      */
-    protected function assertUpdated(BaseTreeModel $model, array $attrs, array $updateAttrs): void
+    protected function assertUpdated(BaseTreeModel $model, array $attrs, array $updateAttrs, $connection = null): void
     {
         $model->update($updateAttrs);
-        $this->assertCreated($model->getTable(), array_merge($attrs, $updateAttrs));
+        $this->assertCreated($model->getTable(), array_merge($attrs, $updateAttrs), $connection);
     }
 
     protected function assertEmptyCollection(Collection $collection): void
@@ -188,9 +189,9 @@ trait BaseDatabaseMethods
         $defaultAttrs = [
             "{$key}_id" => $relationModel->id,
             "{$key}_type" => $relationModel->getMorphClass(),
-            'id' => $model->id
+            'id' => $model->id,
         ];
-        if ( ! empty($attrsCheck)) {
+        if (!empty($attrsCheck)) {
             $defaultAttrs = array_merge($attrsCheck, $defaultAttrs);
         }
         $this->assertInstanceOf(MorphTo::class, $model->{$key}());
@@ -215,7 +216,7 @@ trait BaseDatabaseMethods
         $this->assertCreated($relatedCollection->first(), [
             "{$key}_id" => $model->id,
             "{$key}_type" => $model->getMorphClass(),
-            'id' => $relatedCollection->first()->id
+            'id' => $relatedCollection->first()->id,
         ]);
         $this->assertCount($quantity, $model->{ucfirst($relationName)});
         $this->assertInstanceOf(MorphMany::class, $model->{$relationName}());

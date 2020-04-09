@@ -1,6 +1,5 @@
 vendor/
 storage/
-composer.lock
 
 .idea
 publish/docker-compose/.env
