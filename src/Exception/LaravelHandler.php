@@ -1,12 +1,11 @@
 <?php
 
-
 namespace BaseTree\Exception;
-
 
 use BaseTree\Responses\JsonResponse;
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler;
+use Throwable;
 
 class LaravelHandler extends Handler
 {
@@ -32,11 +31,11 @@ class LaravelHandler extends Handler
     /**
      * Report or log an exception.
      * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
-     * @param  \Exception $exception
+     * @param Throwable $exception
      * @return void
      * @throws Exception
      */
-    public function report(Exception $exception)
+    public function report(Throwable $exception)
     {
         parent::report($exception);
     }

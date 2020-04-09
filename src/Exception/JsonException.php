@@ -1,11 +1,8 @@
 <?php
 
-
 namespace BaseTree\Exception;
 
-
 use BaseTree\Responses\JsonResponse;
-use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -14,15 +11,17 @@ use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
+use Throwable;
 
 trait JsonException
 {
     /**
      * @param Request   $request
-     * @param Exception $exception
+     * @param Throwable $exception
      * @return mixed
+     * @throws Throwable
      */
-    public function render($request, Exception $exception)
+    public function render($request, Throwable $exception)
     {
         if ($request->expectsJson()) {
             return $this->jsonException($exception);
@@ -31,7 +30,7 @@ trait JsonException
         return parent::render($request, $exception);
     }
 
-    protected function jsonException(Exception $exception)
+    protected function jsonException(Throwable $exception)
     {
         /** @var JsonResponse $json */
         $json = $this->jsonResponse();
@@ -39,7 +38,7 @@ trait JsonException
         if ($exception instanceof ValidationException) {
             /** @var $exception ValidationException */
             return $json->unprocessableEntity($exception->getMessage(), [
-                'validator' => $exception->validator->getMessageBag()
+                'validator' => $exception->validator->getMessageBag(),
             ]);
         } elseif ($exception instanceof ModelNotFoundException) {
             return $json->notFound($exception->getMessage());

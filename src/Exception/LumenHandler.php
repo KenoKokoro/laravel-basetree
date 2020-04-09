@@ -1,12 +1,10 @@
 <?php
 
-
 namespace BaseTree\Exception;
 
-
 use BaseTree\Responses\JsonResponse;
-use Exception;
 use Laravel\Lumen\Exceptions\Handler;
+use Throwable;
 
 class LumenHandler extends Handler
 {
@@ -21,10 +19,11 @@ class LumenHandler extends Handler
     ];
 
     /**
-     * @param Exception $e
-     * @throws Exception
+     * @param Throwable $e
+     * @return
+     * @throws Throwable
      */
-    public function report(Exception $e)
+    public function report(Throwable $e)
     {
         return parent::report($e);
     }
