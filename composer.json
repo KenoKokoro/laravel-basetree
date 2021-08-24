@@ -29,7 +29,7 @@
     },
     "require": {
         "php": "^7.4",
-        "barryvdh/laravel-ide-helper": "^2.6",
+        "barryvdh/laravel-ide-helper": "^2.10.0",
         "illuminate/contracts": "^8.0",
         "illuminate/console": "^8.0",
         "illuminate/container": "^8.0",
